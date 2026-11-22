@@ -1,0 +1,17 @@
+{
+  "name": "Pedro Ubaque — Director Artístico, Creativo y Coreógrafo",
+  "short_name": "Pedro Ubaque",
+  "description": "Portafolio profesional de Pedro Ubaque: Dirección escénica, espectáculos temáticos y jefatura de recreación en hoteles y teatros.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "assets/Yo_perfil.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}

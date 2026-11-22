@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portafolio Escénico — Pedro Ubaque</title>
+  <meta property="og:title" content="Portafolio Escénico — Pedro Ubaque">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:image" content="assets/Yo_perfil.webp">
+  <meta property="og:image:alt" content="Portafolio Escénico — Pedro Ubaque">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Portafolio Escénico — Pedro Ubaque">
+  <meta name="twitter:description"
+    content="Portafolio escénico de Pedro Ubaque: dirección coreográfica, montajes temáticos y liderazgo artístico en cinco países.">
+  <meta name="twitter:image" content="assets/Yo_perfil.webp">
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" type="image/webp" href="assets/Yo_perfil.webp">
+  <link rel="apple-touch-icon" href="assets/Yo_perfil.webp">
+  <link rel="manifest" href="site.webmanifest">
+  <!-- Speculation Rules API (Estándar Web 2026: Carga instantánea 0s entre páginas) -->
+  <script type="speculationrules">
+  {
+    "prerender": [
+      {
+        "source": "list",
+        "urls": ["index.html", "projects.html"],
+        "eagerness": "moderate"
+      }
+    ]
+  }
+  </script>
+  <!-- Preload of first canvas frame for instant background rendering -->
+  <link rel="preload" as="image" href="Fondo_projects/ezgif-frame-001.webp" fetchpriority="high">
+  <meta name="description"
+    content="Portafolio escénico de Pedro Ubaque: dirección coreográfica, montajes temáticos y liderazgo artístico en cinco países.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.min.css">
+  <link rel="stylesheet" href="projects.min.css">
+  <link rel="stylesheet" href="enhancements.min.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Portafolio Escénico y Visual — Pedro Ubaque",
+    "description": "Portafolio profesional de espectáculos, dirección coreográfica, montajes temáticos y videoteca de Pedro Ubaque.",
+    "author": {
+      "@type": "Person",
+      "name": "Pedro Ubaque",
+      "jobTitle": "Director Artístico, Creativo y Coreógrafo"
+    }
+  }
+  </script>
+</head>
+
+<body class="projects-body">
+  <!-- Enlace accesible de salto al contenido principal (WCAG / web-design-guidelines) -->
+  <a href="#hero" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Fixed Background Canvas for Smooth Scroll Animation -->
+  <div id="canvas-container">
+    <canvas id="animation-canvas" data-folder="Fondo_projects"></canvas>
+    <div class="canvas-vignette"></div>
+  </div>
+
+  <div class="projects-page-wrapper">
+
+    <!-- Navigation Header (Matching landing page style) -->
+    <header class="site-header projects-header">
+      <div class="header-container">
+        <a href="index.html" class="brand-logo">Pedro Ubaque</a>
+        <nav class="nav-menu">
+          <a href="index.html#home" class="nav-link">Inicio</a>
+          <a href="index.html#career" class="nav-link">Trayectoria</a>
+          <a href="projects.html" class="nav-link active">Portafolio Escénico</a>
+        </nav>
+        <a href="index.html#contact" class="btn-touch-header">
+          <span>Hablemos</span>
+          <span class="btn-circle-arrow">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="projects-hero-section" id="hero">
+        <div class="projects-hero-inner">
+          <div class="hero-top-badge"><span class="badge-pulsing-dot"></span><span class="badge-text">Portafolio
+              Escénico</span></div>
+          <h1 class="projects-main-title">Espectáculos en<br><span class="italic-serif-title">cinco países</span></h1>
+          <p class="projects-lead-text">Producciones en vivo, montajes de gran formato y formación artística: una
+            muestra visual del trabajo coreográfico llevado a tarima desde 2008.</p>
+          <div class="hero-metrics-strip">
+            <div class="metric-item"><span class="metric-number" data-years-since="2008"
+                data-years-suffix="+">18+</span><span class="metric-label">Años de trayectoria</span></div>
+            <div class="metric-separator" aria-hidden="true"></div>
+            <div class="metric-item"><span class="metric-number">5</span><span class="metric-label">Países</span></div>
+            <div class="metric-separator" aria-hidden="true"></div>
+            <div class="metric-item"><span class="metric-number">3</span><span class="metric-label">Continentes</span>
+            </div>
+            <div class="metric-separator" aria-hidden="true"></div>
+            <div class="metric-item"><span class="metric-number" data-count-cards="6">6</span><span
+                class="metric-label">Proyectos</span></div>
+          </div>
+          <div class="projects-filter-bar" role="toolbar" aria-label="Filtro de espectáculos por categoría">
+            <button type="button" class="filter-btn active" data-filter="all" aria-pressed="true"
+              aria-label="Mostrar todos los espectáculos"><span>Todo</span><span class="filter-count">6</span></button>
+            <button type="button" class="filter-btn" data-filter="hotel" aria-pressed="false"
+              aria-label="Filtrar espectáculos por hoteles y resorts"><span>Hoteles y Resorts</span><span
+                class="filter-count">4</span></button>
+            <button type="button" class="filter-btn" data-filter="teatro" aria-pressed="false"
+              aria-label="Filtrar espectáculos por teatro y cabaret"><span>Teatro y Cabaret</span><span
+                class="filter-count">2</span></button>
+          </div>
+        </div>
+      </section>
+      <!-- ============================================
+           GALERÍA VISUAL — El Show en Imágenes (Tarjetas con Títulos Dinámicos)
+           ============================================ -->
+      <section class="gallery-visual-section" id="gallery">
+        <div class="gallery-visual-container">
+          <div class="gallery-section-header">
+            <div class="section-badge-center">
+              <span class="badge-pulsing-dot"></span>
+              <span>El show en imágenes</span>
+            </div>
+            <h2 class="gallery-visual-title">Dirección escénica<br><span class="italic-serif-title">en primera
+                fila</span></h2>
+            <p class="gallery-visual-desc">Desde noches temáticas en resorts frente al mar hasta el rigor del cabaret y
+              la danza europea. Desliza para explorar la puesta en escena, el vestuario y el elenco de cada montaje.</p>
+          </div>
+
+          <!-- Cuadrícula Simétrica de Tarjetas Uniformes -->
+          <div class="gallery-uniform-grid" id="gallery-grid">
+
+            <!-- ==========================================
+                 TARJETA 01: Hotel New Horizons (Cabo Verde)
+                 Carpeta: assets/galeria/01_cabo_verde/
+                 ========================================== -->
+            <article class="gallery-card-uniform is-coming-soon" id="show-cabo-verde" data-category="hotel">
+              <div class="card-slider" data-card-slider>
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Hoteles & Resorts · Cabo
+                    Verde</span>
+                  <div class="slider-top-actions">
+                    <span class="coming-soon-pill">
+                      <span class="badge-dot-orange"></span> Próximamente
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-slider-track" tabindex="0" aria-label="Galería Cabo Verde">
+                  <!-- Foto 01 -->
+                  <div class="card-slide"
+                    data-popup-quote="Espectáculo vibrante, lleno de energía retro. El público no paró de cantar y aplaudir de pie."
+                    data-title="Recuerdos" data-title-italic="Flash Back" data-style="Espectáculo temático"
+                    data-rating="★ 4.9 / 5"
+                    data-desc="La fiebre de los años 60 y 70 revive en un espectáculo lleno de ritmo, acrobacias y color.">
+                    <img src="assets/galeria/01_cabo_verde/foto_01.webp"
+                      alt="Elenco bailando Flash Back, espectáculo musical inspirado en los años 60 y 70 en Cabo Verde."
+                      loading="lazy" decoding="async" width="600" height="420">
+                  </div>
+                </div>
+
+                <!-- Overlay visual de Próximamente -->
+                <div class="card-coming-soon-overlay" aria-hidden="true">
+                  <div class="coming-soon-glass-card">
+                    <div class="coming-soon-badge-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>En preparación</span>
+                    </div>
+                    <p>Montaje y archivo visual para la temporada 2026</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Panel de Información Reactivo (Cambia según la foto) -->
+              <div class="card-info-panel" aria-live="polite">
+                <div class="gallery-meta-row">
+                  <span class="gallery-style dynamic-field">ESPECTÁCULO TEMÁTICO</span>
+                  <span class="gallery-rating dynamic-field"
+                    data-popup-quote="Espectáculo vibrante, lleno de energía retro. El público no paró de cantar y aplaudir de pie."><span
+                      class="rating-star">★</span> 4.9 <span class="rating-max">/5</span></span>
+                </div>
+                <h3 class="gallery-card-title dynamic-field">
+                  <span class="title-main">Recuerdos</span>
+                  <span class="italic-serif-title title-italic">Flash Back</span>
+                </h3>
+                <p class="gallery-card-desc dynamic-field">La fiebre de los años 60 y 70 revive en un espectáculo lleno
+                  de ritmo, acrobacias y color.</p>
+              </div>
+            </article>
+
+            <!-- ==========================================
+                 TARJETA 02: Cabaret Oh Lala (París)
+                 Carpeta: assets/galeria/02_cabaret_paris/
+                 ========================================== -->
+            <article class="gallery-card-uniform is-coming-soon" id="show-cabaret-paris" data-category="teatro">
+              <div class="card-slider" data-card-slider>
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Teatro & Cabaret · París</span>
+                  <div class="slider-top-actions">
+                    <span class="coming-soon-pill">
+                      <span class="badge-dot-orange"></span> Próximamente
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-slider-track" tabindex="0" aria-label="Galería Cabaret Oh Lala">
+                  <!-- Foto 01 -->
+                  <div class="card-slide"
+                    data-popup-quote="Te mantiene con la intriga desde que se apagan las luces hasta que se revela la escena. Me pareció un momento mágico y de una elegancia tremenda."
+                    data-title="Misterio y Seducción" data-title-italic="Oh La La" data-style="CABARET"
+                    data-rating="★ 4.9 / 5"
+                    data-desc="La esencia del cabaret parisino en su punto más alto. Un juego de encanto, elegancia y complicidad que envuelve al espectador en un ambiente de magia, distinción y pura sofisticación.">
+                    <img src="assets/galeria/02_cabaret_paris/foto_01.webp"
+                      alt="Cabaret Oh Lala París · Escena de variedades" loading="lazy" decoding="async" width="600"
+                      height="420" style="object-position: 35% 35%;">
+                  </div>
+                </div>
+
+                <!-- Overlay visual de Próximamente -->
+                <div class="card-coming-soon-overlay" aria-hidden="true">
+                  <div class="coming-soon-glass-card">
+                    <div class="coming-soon-badge-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>En preparación</span>
+                    </div>
+                    <p>Montaje y archivo visual para la temporada 2026</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-info-panel" aria-live="polite">
+                <div class="gallery-meta-row">
+                  <span class="gallery-style dynamic-field">CABARET / REVISTA MUSICAL</span>
+                  <span class="gallery-rating dynamic-field"
+                    data-popup-quote="Nivel internacional impecable. Timing perfecto, chispa parisina y artistas extraordinarios."><span
+                      class="rating-star">★</span> 4.9 <span class="rating-max">/5</span></span>
+                </div>
+                <h3 class="gallery-card-title dynamic-field">
+                  <span class="title-main">Espectáculo Musical</span>
+                  <span class="italic-serif-title title-italic">en París</span>
+                </h3>
+                <p class="gallery-card-desc dynamic-field">Conducción bilingüe, revista musical de variedades y cuadros
+                  de plumas: dominio escénico, humor y sincronía con artistas de cinco nacionalidades.</p>
+              </div>
+            </article>
+
+            <!-- ==========================================
+                 TARJETA 03: Royal Horizon Baobab (Senegal)
+                 Carpeta: assets/galeria/03_senegal_baobab/
+                 ========================================== -->
+            <article class="gallery-card-uniform" id="show-senegal-baobab" data-category="hotel">
+              <div class="card-slider" data-card-slider>
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Hoteles & Resorts · Senegal</span>
+                  <div class="slider-top-actions">
+                    <span class="slider-counter-badge"><span class="current-slide-num">01</span> / <span
+                        class="total-slides-num">20</span></span>
+                    <button type="button" class="gallery-zoom-btn" aria-label="Ampliar imagen actual">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        <line x1="11" y1="8" x2="11" y2="14" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="card-slider-track" tabindex="0" aria-label="Galería Senegal Baobab">
+                  <!-- Foto 01 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una actuación que suspende el aliento. La gracia y fuerza en las alturas rozan lo poético."
+                    data-title="Aro Aéreo" data-title-italic="Desafiando la Gravedad" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 5.0 / 5"
+                    data-desc="La elegancia suspende el aliento a metros de altura. Una exhibición poética en aro aéreo donde la fuerza pura, la flexibilidad y la gracia se unen para regalar una experiencia visual conmovedora e inolvidable.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_01.webp"
+                      alt="Aro aéreo desafiando la gravedad en Senegal" loading="lazy" decoding="async" width="600"
+                      height="420">
+                  </div>
+                  <!-- Foto 02 -->
+                  <div class="card-slide"
+                    data-popup-quote="Sensualidad y destreza combinadas con una iluminación magistral. Una velada inolvidable."
+                    data-title="La Ilusión del Cabaret" data-title-italic="Mirage" data-style="CABARET/REVISTA"
+                    data-rating="★ 4.8 / 5"
+                    data-desc="Una ilusión óptica de lujo, sensualidad y destreza física. Mirage fusiona el magnetismo de la revue parisina con cargadas aéreas en pareja e iluminación envolvente para crear una velada majestuosa.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_02.webp" alt="Show temático en Senegal"
+                      loading="lazy" decoding="async" width="600" height="420">
+                  </div>
+                  <!-- Foto 03 -->
+                  <div class="card-slide"
+                    data-popup-quote="Piel de gallina de principio a fin. La carga emocional y las figuras acrobáticas nos conmovieron."
+                    data-title="Dueto Lírico" data-title-italic="Ecos de una Tormenta" data-style="LÍRICA ACROBÁTICA"
+                    data-rating="★ 4.7 / 5"
+                    data-desc="Cuando las palabras caen, el cuerpo habla. Una pieza de danza lírica y acrobacia que narra el desgaste, el distanciamiento y la tensión de una discusión en pareja a través de potentes cargadas y movimientos de profunda vulnerabilidad.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_03.webp" alt="Show nocturno en playa Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 04 -->
+                  <div class="card-slide"
+                    data-popup-quote="Divertidísimo, contagioso y con una energía desbordante. El público coreó cada compás."
+                    data-title="Salvaje Oeste" data-title-italic="Sueño Americano" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.6 / 5"
+                    data-desc="El espíritu indomable del country y la pasión de la frontera se apoderan de la escena. Una propuesta coreográfica vibrante donde el vestuario tradicional, la fuerza del ritmo y la sintonía en parejas reviven la leyenda del lejano oeste con pura actitud.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_04.webp" alt="Elenco internacional en Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 05 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una tensión seductora y elegante que cortaba el aire. La precisión de los pasos fue sublime."
+                    data-title="Tango" data-title-italic="la Conquista" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.5 / 5"
+                    data-desc="Miradas que desafían, pasos que seducen y una tensión que corta el aire. Un dueto de tango apasionante que narra el estira y afloja de la conquista, donde cada movimiento es un pulso de elegancia, sensualidad y dominio escénico.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_05.webp"
+                      alt="Espectáculo afro-contemporáneo Senegal" loading="lazy" decoding="async" width="600"
+                      height="400">
+                  </div>
+                  <!-- Foto 06 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una ilusión óptica asombrosa. Parecían moverse como un solo cuerpo en perfecta sintonía."
+                    data-title="Fantasía Oriental" data-title-italic="Inta Omri" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.7 / 5"
+                    data-desc="Cuerpos que se entrelazan para formar una sola entidad en movimiento. esta coreografía de fantasía crea una deslumbrante ilusión óptica de brazos sinfónicos y ondas fluidas que hipnotizan al espectador.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_06.webp" alt="Dinámica grupal escenario Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 07 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una auténtica fiesta tropical. Los colores, el ritmo y la alegría pusieron a todo el resort a bailar."
+                    data-title="Noches de Río" data-title-italic="Carnaval" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.8 / 5"
+                    data-desc="El pulso del carnaval brasileño retumba con fuerza en el escenario. Un espectáculo internacional deslumbrante donde la velocidad de la samba, las plumas multicolores y el magnetismo de las garotas contagian una fiesta inolvidable en vivo.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_07.webp" alt="Momento cumbre del show en Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 08 -->
+                  <div class="card-slide"
+                    data-popup-quote="Concentración absoluta y confianza total. Un control corporal que desafía las leyes de la física."
+                    data-title="Equilibrio & Confianza" data-title-italic="Acroyoga" data-style="ARTE CORPORAL"
+                    data-rating="★ 4.6 / 5"
+                    data-desc="Sostener y dejarse llevar. Un diálogo físico de alta exigencia técnica donde el contorsionismo se vuelve metáfora de entrega, equilibrio y templo compartido sobre la escena.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_08.webp" alt="Puesta en escena Senegal Baobab"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 09 -->
+                  <div class="card-slide"
+                    data-popup-quote="Velocidad, percusión viva y una limpieza coreográfica digna de los mejores teatros neoyorquinos."
+                    data-title="Broadway Revival" data-title-italic="A Chorus Line" data-style="TEATRO MUSICAL"
+                    data-rating="★ 4.8 / 5"
+                    data-desc="El sudor, la disciplina y el deseo puro de bailar. Una adaptación del clásico de Broadway que rinde homenaje a la vida del artista de ensamble: el esfuerzo invisible en la sombra para brillar en un solo instante de luz.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_09.webp" alt="Coreografía y ritmo en Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 10 -->
+                  <div class="card-slide"
+                    data-popup-quote="Innovador y moderno con un toque nostálgico. La estética de los paraguas fue visualmente brillante."
+                    data-title="Bailando bajo la Lluvia" data-title-italic="Sincronía Urbana"
+                    data-style="ESPECTÁCULO TEMÁTICO" data-rating="★ 4.7 / 5"
+                    data-desc="Paraguas en mano, líneas rítmicas y un pulso actual. Un número de alto contraste donde la estética retro se cruza con una producción sonora moderna, creando una pieza fresca, dinámica y con sello propio.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_10.webp" alt="Fuerza escénica en Baobab Resort"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 11 -->
+                  <div class="card-slide"
+                    data-popup-quote="Un silencio absoluto en el teatro culminado en una ovación de pie; una pieza que eriza la piel y deja una huella emocional imborrable."
+                    data-title="Lazos Invisibles" data-title-italic="Without You" data-style="DUETO LÍRICO"
+                    data-rating="★ 4.9 / 5"
+                    data-desc="El choque entre sostener y dejar ir. Esta pieza neoclásica utiliza la potencia vocal del clásico Without You para construir un diálogo de pareja donde el equilibrio y la confianza se llevan al límite sobre el escenario.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_11.webp"
+                      alt="Expresión escénica tradicional Senegal" loading="lazy" decoding="async" width="600"
+                      height="400">
+                  </div>
+                  <!-- Foto 12 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una explosión de alegría familiar que encendió aplausos a ritmo constante; el público ovacionó la coordinación milimétrica de las bailarinas."
+                    data-title="Producción Especial" data-title-italic="Christmas Spectacular"
+                    data-style="ESPECTÁCULO NAVIDEÑO" data-rating="★ 4.8 / 5"
+                    data-desc=" La magia de Broadway y el espíritu de la Nochebuena reunidos en una sola línea de baile. Con la precisión característica del estilo Rockettes, este montaje despliega patadas al unísono, sonrisas radiantes y una energía festiva que contagia a todo publico.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_12.webp"
+                      alt="Dinámica de elenco en movimiento Senegal" loading="lazy" decoding="async" width="600"
+                      height="400">
+                  </div>
+                  <!-- Foto 13 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una entrada potente que arrancó gritos y aplausos; la energía y complicidad del grupo en la tarima es contagiosa."
+                    data-title="Salvaje Oeste" data-title-italic="Sueño Americano" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.5 / 5"
+                    data-desc="La fuerza del grupo en una sola pose. Este número destaca la solidez técnica y la picardía escénica de las intérpretes, logrando un momento fresco, dinámico y cargado de personalidad.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_13.webp" alt="Cuadro temático de gala Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 14 -->
+                  <div class="card-slide"
+                    data-popup-quote="El momento de la nieve en escena sorprendió a chicos y grandes; una velada llena de vida con un foro completamente repleto."
+                    data-title="Un Sueño" data-title-italic="Navideño" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.0 / 5"
+                    data-desc="Llevar la magia de la nieve y la Nochebuena al corazón de Senegal. Un hito de producción diseñado para un entorno internacional, combinando escenografía inmersiva, efectos visuales en vivo y una historia entrañable que reunió a familias de todo el mundo en una velada inolvidable.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_14.webp" alt="Armonía visual en escena Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 15 -->
+                  <div class="card-slide"
+                    data-popup-quote="Un momento de muchísima tensión y asombro. La destreza de la compañía para ejecutar figuras tan difíciles se sintió magistral."
+                    data-title="Equilibrio" data-title-italic="Físico" data-style="PERFORMANCE" data-rating="★ 4.4 / 5"
+                    data-desc="La armonía entre temple, resistencia y agilidad elevada a la categoría de arte. Un número imponente diseñado para dejar una marca imborrable en el público, demostrando el altísimo rigor profesional de el elenco.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_15.webp" alt="Clímax rítmico Senegal" loading="lazy"
+                      decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 16 -->
+                  <div class="card-slide"
+                    data-popup-quote="Una puesta en escena entrañable que iluminó el teatro y sacó sonrisas a niños y adultos por igual."
+                    data-title="Producción Especial" data-title-italic="Christmas Spectacular"
+                    data-style="ESPECTÁCULO NAVIDEÑO" data-rating="★ 4.6 / 5"
+                    data-desc="La emoción y el encanto del gran musical neoyorquino hechos realidad sobre las tablas. Un grupo de bailarinas contagia alegría y nostalgia a través de una interpretación llena de vida, despertando esa ilusión única que reúne a toda la familia.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_16.webp" alt="Poder colectivo escénico Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 17 -->
+                  <div class="card-slide"
+                    data-popup-quote="La delicadeza y la fuerza expresiva en el escenario lograron conectar de inmediato con el corazón de todos los presentes."
+                    data-title="Fantasía Oriental" data-title-italic="Inta Omri" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.7 / 5"
+                    data-desc="La intensidad de una melodía legendaria llevada a su máxima expresión. Un solo de gran sensibilidad y elegancia donde la luz azul, la fluidez de las plumas y la entrega escénica transportan al espectador a un viaje de profunda belleza y misterio.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_17.webp" alt="Alineación y estilo escénico Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 18 -->
+                  <div class="card-slide"
+                    data-popup-quote="El carisma de las bailarinas encendió la noche; una muestra de sabor latino auténtico."
+                    data-title="Noche" data-title-italic="Latina" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.8 / 5"
+                    data-desc="La fuerza y el encanto del ritmo caribeño adueñándose de las tablas. Un número vibrante donde las bailarinas imponen su presencia con elegancia, complicidad y una soltura única que transmite la verdadera pasión del baile latino.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_18.webp" alt="Impacto visual en escena Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 19 -->
+                  <div class="card-slide"
+                    data-popup-quote="La entrega del elenco me erizó la piel; una muestra de sensibilidad y belleza pura que dejó una marca imborrable"
+                    data-title="Equilibrios del Alma" data-title-italic="Inestable" data-style="ESPECTÁCULO TEMÁTICO"
+                    data-rating="★ 4.9 / 5"
+                    data-desc="Sintonía humana en su estado más puro. Cada movimiento en declive y cada pausa sobre la escena transmiten la tensión entre sostenerse y dejarse llevar.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_19.webp" alt="Gran ensamble afro-moderno Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                  <!-- Foto 20 -->
+                  <div class="card-slide"
+                    data-popup-quote="Verla flotar en las alturas con esa soltura te deja sin palabras. Es un acto que transmite una paz y un control absoluto verdaderamente asombrosos. — Huésped del Hotel"
+                    data-title="Aro Aéreo" data-title-italic="Desafiando la Gravedad" data-style="Cierre de temporada"
+                    data-rating="★ 4.7 / 5"
+                    data-desc="La máxima expresión de la ingravidez y el dominio del espacio elevado. Un número de altura que desafía los límites visuales, cautivando a la sala entera mediante la ligereza, la concentración absoluta y un riesgo calculado que hechiza al público de principio a fin.">
+                    <img src="assets/galeria/03_senegal_baobab/foto_20.webp" alt="Ovación escénica en Senegal"
+                      loading="lazy" decoding="async" width="600" height="400">
+                  </div>
+                </div>
+
+                <button type="button" class="slider-arrow slider-prev" aria-label="Foto anterior">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button type="button" class="slider-arrow slider-next" aria-label="Siguiente foto">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+                <div class="slider-dots" role="tablist" aria-label="Navegación de fotos"></div>
+              </div>
+
+              <div class="card-info-panel" aria-live="polite">
+                <div class="gallery-meta-row">
+                  <span class="gallery-style dynamic-field">ESPECTÁCULO TEMÁTICO</span>
+                  <span class="gallery-rating dynamic-field"
+                    data-popup-quote="Una actuación que suspende el aliento. La gracia y fuerza en las alturas rozan lo poético."><span
+                      class="rating-star">★</span> 5.0 <span class="rating-max">/5</span></span>
+                </div>
+                <h3 class="gallery-card-title dynamic-field">
+                  <span class="title-main">Aro Aéreo</span>
+                  <span class="italic-serif-title title-italic">Desafiando la Gravedad</span>
+                </h3>
+                <p class="gallery-card-desc dynamic-field">La elegancia suspende el aliento a metros de altura. Una
+                  exhibición poética en aro aéreo donde la fuerza pura, la flexibilidad y la gracia se unen para regalar
+                  una experiencia visual conmovedora e inolvidable.</p>
+              </div>
+            </article>
+
+            <!-- ==========================================
+                 TARJETA 04: Espectáculos Temáticos & Acrobacia Resort (Hotel)
+                 Carpeta: assets/galeria/04_espectaculos_hotel/
+                 ========================================== -->
+            <article class="gallery-card-uniform is-coming-soon" id="show-espectaculos-resort" data-category="hotel">
+              <div class="card-slider" data-card-slider>
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Espectáculo Temático · Resort</span>
+                  <div class="slider-top-actions">
+                    <span class="coming-soon-pill">
+                      <span class="badge-dot-orange"></span> Próximamente
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-slider-track" tabindex="0" aria-label="Galería Espectáculos Resort">
+                  <!-- Foto 01 -->
+                  <div class="card-slide"
+                    data-popup-quote="Un espectáculo aéreo hipnotizante. La delicadeza y el riesgo en el aire maravillaron a todos."
+                    data-title="Acrobacia & Danza Aérea" data-title-italic="de Hotel" data-style="Acrobacia aérea"
+                    data-rating="★ 4.9 / 5"
+                    data-desc="Puesta en escena con aro aéreo, iluminación focalizada y composición coreográfica para noches de gala en resort.">
+                    <img src="assets/galeria/04_espectaculos_hotel/foto_01.webp"
+                      alt="Número en aro aéreo de show hotelero" loading="lazy" decoding="async" width="600"
+                      height="420">
+                  </div>
+                </div>
+
+                <!-- Overlay visual de Próximamente -->
+                <div class="card-coming-soon-overlay" aria-hidden="true">
+                  <div class="coming-soon-glass-card">
+                    <div class="coming-soon-badge-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>En preparación</span>
+                    </div>
+                    <p>Montaje y archivo visual para la temporada 2026</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-info-panel" aria-live="polite">
+                <div class="gallery-meta-row">
+                  <span class="gallery-style dynamic-field">Acrobacia aérea</span>
+                  <span class="gallery-rating dynamic-field"
+                    data-popup-quote="Un espectáculo aéreo hipnotizante. La delicadeza y el riesgo en el aire maravillaron a todos."><span
+                      class="rating-star">★</span> 4.9 <span class="rating-max">/5</span></span>
+                </div>
+                <h3 class="gallery-card-title dynamic-field">
+                  <span class="title-main">Acrobacia & Danza Aérea</span>
+                  <span class="italic-serif-title title-italic">de Hotel</span>
+                </h3>
+                <p class="gallery-card-desc dynamic-field">Puesta en escena con aro aéreo, iluminación focalizada y
+                  composición coreográfica para noches de gala en resort.</p>
+              </div>
+            </article>
+
+            <!-- ==========================================
+                 TARJETA 05: LAX Studio París (Teatro / Escena)
+                 Carpeta: assets/galeria/05_lax_paris/
+                 ========================================== -->
+            <article class="gallery-card-uniform is-coming-soon" id="show-lax-paris" data-category="teatro">
+              <div class="card-slider" data-card-slider>
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Danza & Escena · París</span>
+                  <div class="slider-top-actions">
+                    <span class="coming-soon-pill">
+                      <span class="badge-dot-orange"></span> Próximamente
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-slider-track" tabindex="0" aria-label="Galería LAX Studio París">
+                  <!-- Foto 01 -->
+                  <div class="card-slide"
+                    data-popup-quote="Increible los Workshops. Formación de élite, musicalidad y técnica sin límites."
+                    data-title="LAX Studio" data-title-italic="París" data-style="Entrenamiento coreográfico"
+                    data-rating="★ 5.0 / 5"
+                    data-desc="Laboratorio coreográfico y entrenamiento avanzado: precisión técnica, musicalidad y composición grupal para bailarines profesionales en el corazón de París.">
+                    <img src="assets/galeria/05_lax_paris/foto_01.webp" alt="Talleres en LAX Studio París"
+                      loading="lazy" decoding="async" width="600" height="420">
+                  </div>
+                </div>
+
+                <!-- Overlay visual de Próximamente -->
+                <div class="card-coming-soon-overlay" aria-hidden="true">
+                  <div class="coming-soon-glass-card">
+                    <div class="coming-soon-badge-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>En preparación</span>
+                    </div>
+                    <p>Montaje y archivo visual para la temporada 2026</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-info-panel" aria-live="polite">
+                <div class="gallery-meta-row">
+                  <span class="gallery-style dynamic-field">Entrenamiento coreográfico</span>
+                  <span class="gallery-rating dynamic-field"
+                    data-popup-quote="El referente de la danza en Europa. Formación de élite, musicalidad y técnica sin límites."><span
+                      class="rating-star">★</span> 5.0 <span class="rating-max">/5</span></span>
+                </div>
+                <h3 class="gallery-card-title dynamic-field">
+                  <span class="title-main">LAX Studio</span>
+                  <span class="italic-serif-title title-italic">París</span>
+                </h3>
+                <p class="gallery-card-desc dynamic-field">Laboratorio coreográfico y entrenamiento avanzado: precisión
+                  técnica, musicalidad y composición grupal para bailarines profesionales en el corazón de París.</p>
+              </div>
+            </article>
+
+            <!-- ==========================================
+                 TARJETA 06: Royal Decameron (Colombia & Perú)
+                 Carpeta: assets/galeria/06_decameron/
+                 ========================================== -->
+            <article class="gallery-card-uniform is-coming-soon" id="show-decameron" data-category="hotel">
+              <div class="card-slider" data-card-slider>
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Decameron · Colombia & Perú</span>
+                  <div class="slider-top-actions">
+                    <span class="coming-soon-pill">
+                      <span class="badge-dot-orange"></span> Próximamente
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-slider-track" tabindex="0" aria-label="Galería Royal Decameron">
+                  <!-- Foto 01 -->
+                  <div class="card-slide"
+                    data-popup-quote="Espectáculos monumentales en anfiteatros al aire libre. La escala y el ritmo caribeño son únicos."
+                    data-title="Grandes Montajes" data-title-italic="Caribeños"
+                    data-style="Espectáculos de gran formato" data-rating="★ 4.8 / 5"
+                    data-desc="Espectáculos de gran formato en teatros al aire libre: Cartagena, Barú, Isla Palma y Punta Sal (Perú).">
+                    <img src="assets/galeria/06_decameron/foto_01.webp" alt="Escenario de Royal Decameron"
+                      loading="lazy" decoding="async" width="600" height="420">
+                  </div>
+                </div>
+
+                <!-- Overlay visual de Próximamente -->
+                <div class="card-coming-soon-overlay" aria-hidden="true">
+                  <div class="coming-soon-glass-card">
+                    <div class="coming-soon-badge-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>En preparación</span>
+                    </div>
+                    <p>Montaje y archivo visual para la temporada 2026</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-info-panel" aria-live="polite">
+                <div class="gallery-meta-row">
+                  <span class="gallery-style dynamic-field">Espectáculos de gran formato</span>
+                  <span class="gallery-rating dynamic-field"
+                    data-popup-quote="Espectáculos monumentales en anfiteatros al aire libre. La escala y el ritmo caribeño son únicos."><span
+                      class="rating-star">★</span> 4.8 <span class="rating-max">/5</span></span>
+                </div>
+                <h3 class="gallery-card-title dynamic-field">
+                  <span class="title-main">Grandes Montajes</span>
+                  <span class="italic-serif-title title-italic">Caribeños</span>
+                </h3>
+                <p class="gallery-card-desc dynamic-field">Espectáculos de gran formato en teatros al aire libre:
+                  Cartagena, Barú, Isla Palma y Punta Sal (Perú).</p>
+              </div>
+            </article>
+
+          </div><!-- /gallery-uniform-grid -->
+        </div>
+      </section>
+
+      <!-- ============================================
+           EN MOVIMIENTO — Videos de YouTube / Reels
+           ============================================ -->
+      <section class="video-reel-section" id="reels">
+        <div class="video-reel-container">
+          <div class="video-reel-header">
+            <div class="section-badge-center">
+              <span class="badge-pulsing-dot"></span>
+              <span>En movimiento</span>
+            </div>
+            <h2 class="video-reel-title">Energía viva<br><span class="italic-serif-title">frente al público</span></h2>
+            <p class="video-reel-desc">Tomas directas de función y ensayo: la fuerza del elenco, el ritmo de la música y
+              la atmósfera que se vive cuando se encienden las luces.</p>
+          </div>
+
+          <div class="video-reel-grid">
+
+            <!-- Video Card 1: Hoteles & Resorts · Cabo Verde -->
+            <div class="video-reel-card is-coming-soon" data-category="hotel" data-video-slider>
+              <div class="video-slider-wrap">
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Hoteles &amp; Resorts · Cabo
+                    Verde</span>
+                  <div class="slider-top-actions">
+                    <span class="slider-counter-badge"><span class="current-slide-num">01</span> / <span
+                        class="total-slides-num">02</span></span>
+                    <button type="button" class="video-zoom-btn" aria-label="Ver video en pantalla grande"
+                      title="Ver video en pantalla grande">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        <line x1="11" y1="8" x2="11" y2="14" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="video-slider-track" tabindex="0" aria-label="Videos de Cabo Verde">
+                  <!-- Video 01 -->
+                  <div class="video-slide" data-title="Show de Resort en Vivo"
+                    data-sub="Cabo Verde · Temporada internacional"
+                    data-desc="Puesta en escena principal de noche temática frente al mar con elenco internacional.">
+                    <div class="video-thumbnail-facade"
+                      style="background-image: url('assets/galeria/01_cabo_verde/foto_01.webp');">
+                      <div class="video-facade-overlay"></div>
+                      <div class="video-coming-soon">
+                        <button type="button" class="play-orb" aria-label="Reproducir video Show de Resort en Vivo">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="8,5 19,12 8,19" />
+                          </svg>
+                        </button>
+                        <span class="video-facade-title">Show de Resort en Vivo</span>
+                        <small>New Horizons · Cabo Verde</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Video 02 -->
+                  <div class="video-slide" data-title="Ensamble de Elenco &amp; Percusión"
+                    data-sub="Cabo Verde · Cuadro de gala"
+                    data-desc="Coreografía grupal con vestuario de gala y percusión en vivo para eventos estelares.">
+                    <div class="video-thumbnail-facade"
+                      style="background-image: url('assets/galeria/01_cabo_verde/foto_03.webp');">
+                      <div class="video-facade-overlay"></div>
+                      <div class="video-coming-soon">
+                        <button type="button" class="play-orb" aria-label="Reproducir video Ensamble de Elenco">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="8,5 19,12 8,19" />
+                          </svg>
+                        </button>
+                        <span class="video-facade-title">Ensamble de Elenco</span>
+                        <small>Cuadro de Gala · Cabo Verde</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="button" class="slider-arrow slider-prev" aria-label="Video anterior">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button type="button" class="slider-arrow slider-next" aria-label="Siguiente video">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+                <div class="slider-dots" role="tablist" aria-label="Navegación de videos"></div>
+              </div>
+
+              <div class="video-caption-wrap" aria-live="polite">
+                <span class="video-caption-title dynamic-video-title">Show de Resort en Vivo</span>
+                <span class="video-caption-sub dynamic-video-sub"><span>Cabo Verde</span> &nbsp;·&nbsp; Temporada
+                  internacional</span>
+              </div>
+            </div>
+
+            <!-- Video Card 2: Teatro Musical & Cabaret · París -->
+            <div class="video-reel-card" data-category="teatro" data-video-slider>
+              <div class="video-slider-wrap">
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Teatro &amp; Cabaret · París</span>
+                  <div class="slider-top-actions">
+                    <span class="slider-counter-badge"><span class="current-slide-num">01</span> / <span
+                        class="total-slides-num">02</span></span>
+                    <button type="button" class="video-zoom-btn" aria-label="Ver video en pantalla grande"
+                      title="Ver video en pantalla grande">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        <line x1="11" y1="8" x2="11" y2="14" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="video-slider-track" tabindex="0" aria-label="Videos de Cabaret París">
+                  <!-- Video 01 -->
+                  <div class="video-slide" data-youtube-id="U-cfC2w7ahg" data-title="Noche de Cabaret &amp; Variedades"
+                    data-sub="París · Presentación &amp; escena"
+                    data-desc="Revista musical estilo cabaret parisino con cuadro de plumas y variedades.">
+                    <div class="video-thumbnail-facade"
+                      style="background-image: url('https://i.ytimg.com/vi/U-cfC2w7ahg/maxresdefault.jpg'); background-position: 50% 40%;">
+                      <div class="video-facade-overlay"></div>
+                      <div class="video-coming-soon">
+                        <button type="button" class="play-orb" aria-label="Reproducir video Noche de Cabaret">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="8,5 19,12 8,19" />
+                          </svg>
+                        </button>
+                        <span class="video-facade-title">Cabaret Oh Lala</span>
+                        <small>Teatro Musical · París, Francia</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Video 02 -->
+                  <div class="video-slide" data-title="Acrobacia &amp; Gran Finale"
+                    data-sub="París · Oh Lala Variedades"
+                    data-desc="Número solista y ensamble acrobático para público internacional.">
+                    <div class="video-thumbnail-facade"
+                      style="background-image: url('assets/galeria/02_cabaret_paris/foto_02.webp');">
+                      <div class="video-facade-overlay"></div>
+                      <div class="video-coming-soon">
+                        <button type="button" class="play-orb" aria-label="Reproducir video Acrobacia & Gran Finale">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="8,5 19,12 8,19" />
+                          </svg>
+                        </button>
+                        <span class="video-facade-title">Acrobacia &amp; Gran Finale</span>
+                        <small>Variedades · París, Francia</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="button" class="slider-arrow slider-prev" aria-label="Video anterior">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button type="button" class="slider-arrow slider-next" aria-label="Siguiente video">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+                <div class="slider-dots" role="tablist" aria-label="Navegación de videos"></div>
+              </div>
+
+              <div class="video-caption-wrap" aria-live="polite">
+                <span class="video-caption-title dynamic-video-title">Noche de Cabaret &amp; Variedades</span>
+                <span class="video-caption-sub dynamic-video-sub"><span>París</span> &nbsp;·&nbsp; Presentación &amp;
+                  escena</span>
+              </div>
+            </div>
+
+            <!-- Video Card 3: Formación & Dirección · Pedro Ubaque -->
+            <div class="video-reel-card" data-category="docencia" data-video-slider id="video-card-pedro">
+              <div class="video-slider-wrap">
+                <div class="card-slider-top-bar">
+                  <span class="gallery-badge"><span class="badge-dot-orange"></span>Canal Oficial · Pedro Ubaque</span>
+                  <div class="slider-top-actions">
+                    <span class="slider-counter-badge"><span class="current-slide-num">01</span> / <span
+                        class="total-slides-num">02</span></span>
+                    <button type="button" class="video-zoom-btn" aria-label="Ver video en pantalla grande"
+                      title="Ver video en pantalla grande">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        <line x1="11" y1="8" x2="11" y2="14" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="video-slider-track" tabindex="0" aria-label="Videos de Pedro Ubaque">
+                  <!-- Video 01 (YouTube Real) -->
+                  <div class="video-slide" data-youtube-id="n3mjVw7GmHA"
+                    data-title="CAMBIA TU &nbsp;·&nbsp; Pedro Ubaque" data-sub="YouTube · Registro oficial"
+                    data-desc="Producción coreográfica y audiovisual del canal oficial de Pedro Ubaque.">
+                    <div class="video-thumbnail-facade"
+                      style="background-image: url('https://i.ytimg.com/vi/n3mjVw7GmHA/maxresdefault.jpg');">
+                      <div class="video-facade-overlay"></div>
+                      <div class="video-coming-soon">
+                        <button type="button" class="play-orb" aria-label="Reproducir video CAMBIA TU de Pedro Ubaque">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="8,5 19,12 8,19" />
+                          </svg>
+                        </button>
+                        <span class="video-facade-title">CAMBIA TU</span>
+                        <small>Canal Oficial · Pedro Ubaque</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Video 02 -->
+                  <div class="video-slide" data-title="Proceso Creativo &amp; Técnica"
+                    data-sub="Cartagena / LAX París · Taller coreográfico"
+                    data-desc="Entrenamiento intensivo y preparación física para bailarines profesionales en Europa y América.">
+                    <div class="video-thumbnail-facade"
+                      style="background-image: url('assets/galeria/05_lax_paris/foto_01.webp');">
+                      <div class="video-facade-overlay"></div>
+                      <div class="video-coming-soon">
+                        <button type="button" class="play-orb" aria-label="Reproducir video Proceso Creativo">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="8,5 19,12 8,19" />
+                          </svg>
+                        </button>
+                        <span class="video-facade-title">Proceso Creativo</span>
+                        <small>LAX Studio París &amp; Cartagena</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="button" class="slider-arrow slider-prev" aria-label="Video anterior">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button type="button" class="slider-arrow slider-next" aria-label="Siguiente video">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+                <div class="slider-dots" role="tablist" aria-label="Navegación de videos"></div>
+              </div>
+
+              <div class="video-caption-wrap" aria-live="polite">
+                <span class="video-caption-title dynamic-video-title">CAMBIA TU &nbsp;·&nbsp; Pedro Ubaque</span>
+                <span class="video-caption-sub dynamic-video-sub"><span>YouTube</span> &nbsp;·&nbsp; Registro
+                  audiovisual</span>
+              </div>
+            </div>
+
+          </div><!-- /video-reel-grid -->
+        </div>
+      </section>
+
+      <section class="projects-process-section" id="process">
+        <div class="process-container">
+          <div class="section-badge-center"><span class="badge-pulsing-dot"></span><span>Cómo trabajo</span></div>
+          <h2 class="process-section-title">Del concepto<br><span class="italic-serif-title">al escenario</span></h2>
+          <p class="process-section-desc">Un método simple para que cada espectáculo llegue listo, a tiempo y con el
+            nivel que tu público espera.</p>
+          <div class="process-steps-grid">
+            <div class="process-card"><span class="process-num">01</span>
+              <h3 class="process-card-title">Conocer tu<br>público y espacio</h3>
+              <p class="process-card-text">Entiendo el concepto del hotel o teatro, el tipo de publico, el escenario y
+                los recursos disponibles.</p>
+            </div>
+            <div class="process-card"><span class="process-num">02</span>
+              <h3 class="process-card-title">Diseñar el<br>espectáculo</h3>
+              <p class="process-card-text">Defino tema, coreografías, música, vestuario y escaleta, con una propuesta
+                clara antes de empezar.</p>
+            </div>
+            <div class="process-card"><span class="process-num">03</span>
+              <h3 class="process-card-title">Ensayar y<br>formar al equipo</h3>
+              <p class="process-card-text">Dirijo ensayos y entreno a bailarines y recreadores para que el espectáculo
+                sea
+                sólido y repetible.</p>
+            </div>
+            <div class="process-card"><span class="process-num">04</span>
+              <h3 class="process-card-title">Estrenar y<br>mejorar</h3>
+              <p class="process-card-text">Conduzco el estreno, superviso la operación y ajusto según la respuesta del
+                público.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="projects-impact-section" id="impact">
+        <div class="impact-container">
+          <div class="section-badge-center"><span class="badge-pulsing-dot"></span><span>Referencias</span></div>
+          <h2 class="impact-section-title">Lo que dicen<br><span class="italic-serif-title">mis empleadores</span></h2>
+          <p class="impact-section-desc">Extractos de cartas laborales emitidas por los establecimientos donde trabajé.
+            Los documentos completos están disponibles bajo solicitud.</p>
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <p class="testimonial-quote">"Sus habilidades artísticas y su capacidad de liderazgo fueron fundamentales
+                para el éxito de las actividades del equipo."</p>
+              <div class="testimonial-author">
+                <div class="author-avatar avatar-1">
+                  <img src="assets/testimonials/victor.webp" alt="Víctor Figueiredo" class="avatar-img">
+                </div>
+                <div class="author-info"><span class="author-name">Víctor Figueiredo</span><span
+                    class="author-role">Director, Hotel New Horizons Boa Vista</span></div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <p class="testimonial-quote">"Demostró gran profesionalismo, liderazgo y un compromiso constante,
+                contribuyendo al desarrollo artístico de la comunidad del estudio."</p>
+              <div class="testimonial-author">
+                <div class="author-avatar avatar-2">
+                  <img src="assets/testimonials/lax.webp" alt="LAX Studio" class="avatar-img">
+                </div>
+                <div class="author-info"><span class="author-name">LAX Studio</span><span
+                    class="author-role">Certificado de experiencia artística y pedagógica</span></div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <p class="testimonial-quote">Clasificado en la categoría 9ª A del convenio colectivo de la industria
+                hotelera de Senegal, en calidad de coreógrafo.</p>
+              <div class="testimonial-author">
+                <div class="author-avatar avatar-3">
+                  <img src="assets/testimonials/bamba.webp" alt="Bamba" class="avatar-img">
+                </div>
+                <div class="author-info"><span class="author-name">Recursos Humanos</span><span
+                    class="author-role">Royal Horizon Baobab </span></div>
+              </div>
+            </div>
+          </div>
+          <div class="accolades-bar"><span class="accolades-label">Dirección:</span>
+            <div class="accolades-list"><span class="accolade-tag">Artística</span><span
+                class="accolade-tag">Creativa</span><span class="accolade-tag">Escénica</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================================
+         FOOTER SECTION: Call to Action & Navigation
+         ========================================= -->
+    <footer class="projects-footer" id="footer">
+      <div class="footer-inner">
+        <div class="footer-cta-card">
+          <div class="footer-cta-left"><span class="cta-micro-badge">Próxima temporada</span>
+            <h2 class="footer-cta-title">¿Tienes un espectáculo en mente?<br><span
+                class="italic-serif-title">Hablemos.</span></h2>
+            <p class="footer-cta-sub">Cuéntame qué temporada o producción estás planeando y diseño una propuesta
+              artística y técnica a tu medida.</p>
+          </div>
+          <div class="footer-cta-right"><a href="index.html#contact"
+              class="btn-footer-primary"><span>Hablemos</span><span class="btn-circle-arrow-white"><svg width="12"
+                  height="12" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg></span></a></div>
+        </div>
+        <div class="footer-columns-grid">
+          <div class="footer-col brand-col"><a href="index.html" class="footer-logo">Pedro Ubaque</a>
+            <p class="footer-bio">Dirección coreográfica, programas recreativos y liderazgo de elencos con visión
+              escénica internacional.</p>
+            <div class="location-pill"><span class="status-indicator"></span><span>Cartagena, Colombia · Abierto a
+                propuestas internacionales</span></div>
+          </div>
+          <div class="footer-col">
+            <h3 class="footer-col-title">Navegación</h3>
+            <ul class="footer-links">
+              <li><a href="index.html#home">Inicio</a></li>
+              <li><a href="index.html#career">Trayectoria</a></li>
+              <li><a href="projects.html">Portafolio Escénico</a></li>
+              <li><a href="index.html#contact">Contacto</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3 class="footer-col-title">Contacto</h3>
+            <ul class="footer-links">
+              <li><a href="mailto:contacto.pedroubaque@gmail.com">contacto.pedroubaque@gmail.com</a></li>
+              <li><a href="tel:+573135907698">+57 313 590 7698</a></li>
+              <li><a href="https://wa.me/33762675981" target="_blank" rel="noopener">WhatsApp ↗</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom-row">
+          <p class="copyright-text">&copy; 2026 Pedro Ubaque. Todos los derechos reservados.</p>
+          <div class="footer-bottom-actions"><a href="#hero" class="btn-back-top" id="btn-back-top"><span>Volver
+                arriba</span><span class="arrow-up">↑</span></a></div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Lightbox Modal para Vista Ampliada con Navegación de Galería -->
+  <div id="image-lightbox" class="lightbox-backdrop" aria-hidden="true" role="dialog" aria-modal="true"
+    aria-label="Visor de galería de espectáculos">
+    <!-- Flecha anterior -->
+    <button type="button" class="lightbox-nav lightbox-nav-prev" id="lightbox-prev" aria-label="Foto anterior">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+
+    <div class="lightbox-dialog">
+      <div class="lightbox-topbar">
+        <span class="lightbox-slide-counter" id="lightbox-counter">01 / 05</span>
+        <div class="lightbox-topbar-actions">
+          <button type="button" class="lightbox-share-btn" id="lightbox-share-btn" aria-label="Compartir espectáculo"
+            title="Compartir espectáculo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </button>
+          <button type="button" class="lightbox-close" id="lightbox-close-btn"
+            aria-label="Cerrar visor">&times;</button>
+        </div>
+      </div>
+      <div class="lightbox-content">
+        <img id="lightbox-img" alt="Vista ampliada del proyecto"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+          alt="Vista ampliada del espectáculo" decoding="async">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+      </div>
+    </div>
+
+    <!-- Flecha siguiente -->
+    <button type="button" class="lightbox-nav lightbox-nav-next" id="lightbox-next" aria-label="Siguiente foto">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Video Cinema Lightbox Modal para Pantalla Grande (Opción B) -->
+  <div id="video-lightbox" class="lightbox-backdrop" aria-hidden="true" role="dialog" aria-modal="true"
+    aria-label="Visor de video en pantalla grande">
+    <!-- Flecha anterior -->
+    <button type="button" class="lightbox-nav lightbox-nav-prev" id="video-lb-prev" aria-label="Video anterior">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+
+    <div class="lightbox-dialog video-lightbox-dialog">
+      <div class="lightbox-topbar">
+        <span class="lightbox-slide-counter" id="video-lb-counter">01 / 02</span>
+        <div class="lightbox-topbar-actions">
+          <button type="button" class="lightbox-share-btn" id="video-lb-share-btn" aria-label="Compartir video"
+            title="Compartir video">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </button>
+          <button type="button" class="lightbox-close" id="video-lb-close-btn"
+            aria-label="Cerrar reproductor">&times;</button>
+        </div>
+      </div>
+      <div class="lightbox-content video-lightbox-content">
+        <div class="video-cinema-frame" id="video-lb-frame">
+          <!-- Iframe de YouTube inyectado dinámicamente -->
+        </div>
+        <div class="lightbox-caption" id="video-lb-caption"></div>
+      </div>
+    </div>
+
+    <!-- Flecha siguiente -->
+    <button type="button" class="lightbox-nav lightbox-nav-next" id="video-lb-next" aria-label="Siguiente video">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- ==========================================
+       Rating Popup Global (Singleton Audience Score)
+       ========================================== -->
+  <div id="rating-popup-global" class="rating-popup" role="tooltip" aria-live="polite">
+    <div class="rating-popup-header">
+      <div class="rating-popup-score-wrap">
+        <span class="rating-popup-star-icon">★</span>
+        <span class="rating-popup-score">4.8</span>
+        <span class="rating-popup-max">/5</span>
+      </div>
+      <div class="rating-popup-stars-row" aria-hidden="true"></div>
+    </div>
+    <div class="rating-popup-badge-label">
+      <span class="rating-popup-pulse-dot"></span>
+      Puntuación del público
+    </div>
+    <p class="rating-popup-quote"></p>
+  </div>
+
+  <script src="script.min.js" defer></script>
+  <script src="projects.js" defer></script>
+  <script src="enhancements.min.js" defer></script>
+</body>
+
+</html>

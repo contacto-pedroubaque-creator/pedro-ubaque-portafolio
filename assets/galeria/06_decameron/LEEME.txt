@@ -1,0 +1,14 @@
+CARPETA DE FOTOS PARA LA TARJETA: 06_DECAMERON
+=====================================================
+Aquí puedes colocar hasta 20 fotos para esta tarjeta.
+
+Nombres recomendados para tus imágenes:
+- foto_01.webp (o .jpg/.png) -> Portada principal del espectáculo
+- foto_02.webp -> Foto 2
+- foto_03.webp -> Foto 3
+...
+- foto_20.webp -> Foto 20
+
+En projects.html cada tarjeta ya cuenta con capacidad para 20 diapositivas.
+El sistema detecta automáticamente las fotos disponibles en la carpeta y las muestra en el slider y en el visor Lightbox.
+Cuando agregues una foto nueva con el nombre foto_XX.webp, aparecerá de inmediato al recargar.

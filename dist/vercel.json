@@ -1,0 +1,18 @@
+{
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(assets|frames|Fondo_projects)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/proyectos", "destination": "/projects.html" },
+    { "source": "/portafolio", "destination": "/projects.html" }
+  ]
+}

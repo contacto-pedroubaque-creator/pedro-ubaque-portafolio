@@ -1,0 +1,239 @@
+/**
+ * enhancements.js
+ * Mejoras NUEVAS y aisladas. No toca el canvas, script.js, projects.js
+ * ni ninguna función existente. Se puede quitar borrando la línea <script>.
+ *
+ * Incluye:
+ *  1. Menú hamburguesa para móvil
+ *  2. Resaltado de la sección activa en el menú (scroll spy)
+ *  3. Botones "+" de servicios funcionales
+ *  4. Contadores de filtros de proyectos calculados automáticamente
+ *  5. Botón flotante de WhatsApp (opcional: solo aparece si pones tu número)
+ *  6. Años de trayectoria y número de proyectos calculados automáticamente
+ *  7. aria-pressed en los filtros de proyectos
+ */
+(function () {
+  'use strict';
+
+  /* ====== CONFIGURACIÓN (edita solo esto) ====== */
+  // Número con código de país, solo dígitos. Ejemplo Colombia: '573001234567'
+  // Déjalo vacío ('') y el botón flotante NO se muestra.
+  var WHATSAPP_NUMBER = '33762675981';
+  var WHATSAPP_MESSAGE = 'Hola Pedro, vi tu portafolio y me gustaría hablar contigo.';
+
+  // Textos del botón "+" de cada servicio (mismo orden que las tarjetas)
+  var SERVICE_TEXTS = [
+    'Diseño la programación diaria y nocturna, formo al equipo de animadores y cuido la experiencia del huésped.',
+    'Creo coreografías y espectáculos temáticos con una historia clara y preparo a los bailarines para llevarlos a escena.',
+    'Coordino música, luces, escenografía y escaleta para que cada función salga a tiempo.',
+    'Diseño afiches, piezas digitales y material promocional coherentes con la identidad de cada evento.'
+  ];
+  /* ============================================= */
+
+  function ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  /* 1. Menú móvil ---------------------------------------------------- */
+  function initMobileMenu() {
+    var container = document.querySelector('.site-header .header-container');
+    var nav = container && container.querySelector('.nav-menu');
+    if (!container || !nav) return;
+
+    container.classList.add('has-mobile-menu');
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'mobile-menu-toggle';
+    toggle.setAttribute('aria-label', 'Abrir menú');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = '<span></span><span></span><span></span>';
+
+    var panel = document.createElement('div');
+    panel.className = 'mobile-menu-panel';
+
+    nav.querySelectorAll('a').forEach(function (a) {
+      var link = document.createElement('a');
+      link.href = a.getAttribute('href');
+      link.textContent = a.textContent.trim();
+      link.className = 'mobile-menu-link' + (a.classList.contains('active') ? ' active' : '');
+      panel.appendChild(link);
+    });
+
+    var cta = container.querySelector('.btn-touch-header');
+    if (cta) {
+      var ctaLink = document.createElement('a');
+      ctaLink.href = cta.getAttribute('href');
+      ctaLink.textContent = 'Hablemos';
+      ctaLink.className = 'mobile-menu-link is-cta';
+      panel.appendChild(ctaLink);
+    }
+
+    container.appendChild(toggle);
+    container.appendChild(panel);
+
+    function setOpen(open) {
+      panel.classList.toggle('is-open', open);
+      toggle.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    }
+
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(!panel.classList.contains('is-open'));
+    });
+    panel.addEventListener('click', function (e) {
+      if (e.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('click', function (e) {
+      if (!container.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 768) setOpen(false);
+    }, { passive: true });
+  }
+
+  /* 2. Sección activa en el menú (solo index.html) ------------------- */
+  function initScrollSpy() {
+    var home = document.getElementById('home');
+    var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    if (!home || !navLinks.length) return;
+
+    // Secciones -> ancla del menú a la que pertenecen
+    var map = [
+      { id: 'home', href: '#home' },
+      { id: 'about', href: '#career' },
+      { id: 'services', href: '#career' },
+      { id: 'career', href: '#career' },
+      { id: 'identity', href: '#career' },
+      { id: 'contact', href: null }
+    ].filter(function (m) { return document.getElementById(m.id); });
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var marker = window.innerHeight * 0.35;
+      var current = map[0];
+      map.forEach(function (m) {
+        if (document.getElementById(m.id).getBoundingClientRect().top <= marker) current = m;
+      });
+      document.querySelectorAll('.nav-link[href^="#"], .mobile-menu-link[href^="#"]').forEach(function (a) {
+        a.classList.toggle('active', !!current.href && a.getAttribute('href') === current.href);
+      });
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+
+  /* 3. Botones "+" de servicios -------------------------------------- */
+  function initServiceCards() {
+    document.querySelectorAll('.tailored-card').forEach(function (card, i) {
+      var btn = card.querySelector('.btn-card-plus');
+      if (!btn) return;
+
+      var titleEl = card.querySelector('.card-title');
+      var title = titleEl ? titleEl.textContent.replace(/\s+/g, ' ').trim() : 'este servicio';
+      btn.setAttribute('aria-label', 'Ver más sobre ' + title);
+      btn.setAttribute('aria-expanded', 'false');
+
+      var extra = document.createElement('div');
+      extra.className = 'service-extra';
+      var p = document.createElement('p');
+      p.textContent = (SERVICE_TEXTS[i] ? SERVICE_TEXTS[i] + ' ' : '') + '¿Lo necesitas para tu hotel, teatro o evento? Cuéntame tu idea y armamos la propuesta.';
+      extra.appendChild(p);
+      card.insertBefore(extra, btn);
+
+      btn.addEventListener('click', function () {
+        // Cerrar cualquier otra tarjeta abierta antes de abrir la actual
+        document.querySelectorAll('.tailored-card.is-open').forEach(function(openCard) {
+          if (openCard !== card) {
+            openCard.classList.remove('is-open');
+            var otherBtn = openCard.querySelector('.btn-card-plus');
+            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        var open = card.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+  }
+
+  /* 4. WhatsApp flotante (opcional) ---------------------------------- */
+  function initWhatsAppFloat() {
+    var num = String(WHATSAPP_NUMBER).replace(/\D/g, '');
+    if (!num) return;
+
+    var a = document.createElement('a');
+    a.className = 'wa-float';
+    a.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent(WHATSAPP_MESSAGE);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.setAttribute('aria-label', 'Escríbeme por WhatsApp');
+    a.innerHTML =
+      '<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+      '<path d="M12.04 2a9.9 9.9 0 0 0-8.4 15.1L2 22l5.05-1.6A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.3 15l-.3-.18-3 .95.98-2.9-.2-.3A8.1 8.1 0 0 1 12.04 3.8zM8.6 7.6c-.2 0-.5.07-.75.35-.25.27-.98.96-.98 2.34s1 2.71 1.15 2.9c.14.18 1.96 3.1 4.83 4.22 2.4.94 2.88.75 3.4.7.52-.05 1.68-.68 1.92-1.35.23-.66.23-1.23.16-1.35-.07-.12-.26-.19-.54-.33-.28-.14-1.68-.83-1.94-.92-.26-.1-.45-.14-.64.14-.19.28-.73.92-.9 1.1-.16.2-.33.21-.6.07-.29-.14-1.2-.44-2.28-1.4-.85-.76-1.42-1.7-1.58-1.98-.17-.28-.02-.44.12-.58.13-.13.28-.33.42-.5.14-.16.19-.28.28-.47.1-.19.05-.35-.02-.5-.07-.14-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.49z"/></svg>';
+    document.body.appendChild(a);
+
+    // Se oculta mientras la sección de contacto está a la vista (ya tiene su propio WhatsApp)
+    var contact = document.getElementById('contact');
+    if (contact && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        a.classList.toggle('is-hidden', entries[0].isIntersecting);
+      }, { threshold: 0.15 }).observe(contact);
+    }
+  }
+
+  /* 5. Años de trayectoria calculados dinámicamente ------------------- */
+  function initAutoNumbers() {
+    var year = new Date().getFullYear();
+    document.querySelectorAll('[data-years-since]').forEach(function (el) {
+      var since = parseInt(el.getAttribute('data-years-since'), 10);
+      if (!since) return;
+      el.textContent = (year - since) + (el.getAttribute('data-years-suffix') || '');
+    });
+  }
+
+
+  function initYouTubePosters() {
+    document.querySelectorAll('.video-slide[data-youtube-id]').forEach(function(slide) {
+      var id = slide.getAttribute('data-youtube-id');
+      var facade = slide.querySelector('.video-thumbnail-facade');
+      if (!facade) return;
+
+      var tryPosters = ['maxresdefault.jpg', 'sddefault.jpg', 'hqdefault.jpg'];
+      var found = false;
+
+      tryPosters.forEach(function(suffix) {
+        if (found) return;
+        var img = new Image();
+        img.onload = function() {
+          if (this.naturalWidth > 120) {
+            var url = 'https://i.ytimg.com/vi/' + id + '/' + suffix;
+            facade.style.backgroundImage = 'url("' + url + '")';
+            if (slide._facadeHTML) {
+              slide._facadeHTML = slide._facadeHTML.replace(/background-image:\s*url\([^)]*\)/, 'background-image: url("'+url+'")');
+            }
+            found = true;
+          }
+        };
+        img.src = 'https://i.ytimg.com/vi/' + id + '/' + suffix;
+      });
+    });
+  }
+  ready(function () {
+    initMobileMenu();
+    initScrollSpy();
+    initServiceCards();
+    initWhatsAppFloat();
+    initAutoNumbers();
+    initYouTubePosters();
+  });
+})();
