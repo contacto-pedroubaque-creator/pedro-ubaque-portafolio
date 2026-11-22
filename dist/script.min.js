@@ -11,13 +11,17 @@
   // --- Ajustes de rendimiento y protección de memoria móvil ---
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const conn = navigator.connection || {};
-  // Detección estricta de móvil/tablet para prevenir el crash de memoria RAM (OOM / Jetsam) en iOS WebKit y Android
+  // Detección estricta de móvil/tablet para adaptar el presupuesto de memoria RAM (OOM / Jetsam)
   const IS_MOBILE = window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024) || !!conn.saveData;
-  const STATIC_BG = REDUCED_MOTION || IS_MOBILE;
 
   const LOW_POWER = !!conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || '');
-  const FRAME_STEP = LOW_POWER ? 2 : 1;
-  const CONCURRENCY = LOW_POWER ? 4 : 6;
+  const FRAME_STEP = IS_MOBILE ? 2 : (LOW_POWER ? 2 : 1);
+  const CONCURRENCY = IS_MOBILE ? 3 : (LOW_POWER ? 4 : 6);
+
+  // Límite de fotogramas simultáneos en RAM para evitar que WebKit/Safari cierre la pestaña
+  // En móvil: máximo 16 fotogramas (~32 MB de RAM con downsampling a 960x540)
+  // En PC/Desktop: hasta 240 fotogramas
+  const MAX_MEMORY_FRAMES = IS_MOBILE ? 16 : 240;
 
   // Ajusta un índice al frame más cercano que realmente se descarga
   function snapFrame(i) {
@@ -27,6 +31,7 @@
 
   // Preloaded frames array (1-indexed, size 241)
   const frames = new Array(FRAME_COUNT + 1).fill(null);
+  const activeFrameKeys = [];
 
   let targetFrame = 1;
   let currentFrame = 1;
@@ -34,6 +39,43 @@
   let isFirstFrameRendered = false;
   // Tracks frames drawn as fallback that need a redraw when the real frame loads
   const pendingFrameUpdates = new Set();
+
+  // Libera de forma activa la memoria del fotograma más alejado para no exceder MAX_MEMORY_FRAMES
+  function evictExcessFrames(currentIndex) {
+    if (activeFrameKeys.length <= MAX_MEMORY_FRAMES) return;
+
+    let farthestIdx = -1;
+    let maxDist = -1;
+    let listPos = -1;
+
+    for (let i = 0; i < activeFrameKeys.length; i++) {
+      const idx = activeFrameKeys[i];
+      if (idx === 1) continue; // Mantener siempre el fotograma 1 como ancla visual
+      const dist = Math.abs(idx - currentIndex);
+      if (dist > maxDist) {
+        maxDist = dist;
+        farthestIdx = idx;
+        listPos = i;
+      }
+    }
+
+    if (farthestIdx !== -1 && listPos !== -1) {
+      activeFrameKeys.splice(listPos, 1);
+      const oldItem = frames[farthestIdx];
+      frames[farthestIdx] = null;
+      if (oldItem && typeof oldItem.close === 'function') {
+        try { oldItem.close(); } catch (e) {} // Libera la memoria de GPU y RAM de inmediato
+      }
+    }
+  }
+
+  function storeFrame(index, item) {
+    frames[index] = item;
+    if (!activeFrameKeys.includes(index)) {
+      activeFrameKeys.push(index);
+    }
+    evictExcessFrames(Math.round(currentFrame));
+  }
 
   // Format frame URL
   function getFrameUrl(index) {
@@ -51,8 +93,19 @@ async function loadSingleFrame(index) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
     if ('createImageBitmap' in window) {
-      const bitmap = await createImageBitmap(blob);
-      frames[index] = bitmap;
+      // En móvil se decodifica adaptando a 960x540 (ultra nítido en pantallas verticales) ahorrando 75% de RAM por frame
+      let bitmap;
+      if (IS_MOBILE) {
+        try {
+          bitmap = await createImageBitmap(blob, { resizeWidth: 960, resizeHeight: 540, resizeQuality: 'medium' });
+        } catch (e) {
+          bitmap = await createImageBitmap(blob);
+        }
+      } else {
+        bitmap = await createImageBitmap(blob);
+      }
+
+      storeFrame(index, bitmap);
       // If this frame was previously drawn as a fallback, redraw it now
       if (pendingFrameUpdates.has(index)) {
         pendingFrameUpdates.delete(index);
@@ -69,7 +122,7 @@ async function loadSingleFrame(index) {
     const img = new Image();
     img.src = url;
     img.onload = () => {
-      frames[index] = img;
+      storeFrame(index, img);
       // If this frame was previously drawn as a fallback, redraw it now
       if (pendingFrameUpdates.has(index)) {
         pendingFrameUpdates.delete(index);
@@ -104,6 +157,8 @@ function drawFrame(index) {
         break;
       }
     }
+    // Dispara la carga bajo demanda del fotograma objetivo
+    loadSingleFrame(index);
   }
 
   if (!img) return;
@@ -155,9 +210,25 @@ function resize() {
   drawFrame(currentIdx);
 }
 
+// Precarga dinámica adaptativa en móvil según la posición del scroll
+let nearbyScrollTimer = null;
+function requestNearbyFrames(centerIdx) {
+  clearTimeout(nearbyScrollTimer);
+  nearbyScrollTimer = setTimeout(() => {
+    const step = FRAME_STEP;
+    const count = IS_MOBILE ? 3 : 6;
+    for (let offset = 1; offset <= count; offset++) {
+      const forwardIdx = snapFrame(centerIdx + offset * step);
+      const backwardIdx = snapFrame(centerIdx - offset * step);
+      if (forwardIdx <= FRAME_COUNT && !frames[forwardIdx]) loadSingleFrame(forwardIdx);
+      if (backwardIdx >= 1 && !frames[backwardIdx]) loadSingleFrame(backwardIdx);
+    }
+  }, 25);
+}
+
 // Calculate target frame from scroll position
 function updateScrollTarget() {
-  if (STATIC_BG) {
+  if (REDUCED_MOTION) {
     targetFrame = 1;
     return;
   }
@@ -169,19 +240,23 @@ function updateScrollTarget() {
   const progress = maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0;
   targetFrame = 1 + progress * (FRAME_COUNT - 1);
   wake();
+
+  if (IS_MOBILE) {
+    requestNearbyFrames(Math.round(targetFrame));
+  }
 }
 
 // El bucle solo corre mientras hay algo que animar (ahorra batería en reposo)
 let rafId = null;
 function wake() {
-  if (STATIC_BG) return;
+  if (REDUCED_MOTION) return;
   if (rafId === null) rafId = requestAnimationFrame(tick);
 }
 
 // Smooth linear interpolation animation loop
 function tick() {
   rafId = null;
-  if (STATIC_BG) return;
+  if (REDUCED_MOTION) return;
 
   // LERP damping for buttery smooth motion
   const diff = targetFrame - currentFrame;
@@ -210,10 +285,16 @@ async function preloadAllFrames() {
   drawFrame(1);
   isFirstFrameRendered = true;
 
-  // En móvil / ahorro de datos o con "reducir movimiento":
-  // Se detiene aquí. Solo se usa el fotograma 1 (~8 MB RAM).
-  // Esto elimina el 100% de los cierres forzosos (Jetsam OOM Crash) en iOS Safari y Android.
-  if (STATIC_BG) return;
+  if (REDUCED_MOTION) return;
+
+  // En móvil: precarga suavemente solo los primeros 10 fotogramas iniciales
+  // El resto se carga y recicla en tiempo real con la ventana deslizante al hacer scroll
+  if (IS_MOBILE) {
+    for (let i = 2; i <= Math.min(10, FRAME_COUNT); i += FRAME_STEP) {
+      loadSingleFrame(i);
+    }
+    return;
+  }
 
   // El resto espera a que la página termine de cargar (fuentes, logos) y al navegador libre
   if (document.readyState !== 'complete') {
