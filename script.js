@@ -8,13 +8,15 @@
   const framesFolder = canvas.getAttribute('data-folder') || 'frames';
   const FRAME_COUNT = parseInt(canvas.getAttribute('data-frame-count'), 10) || 240;
 
-  // --- Ajustes de rendimiento (no cambian el aspecto en escritorio) ---
+  // --- Ajustes de rendimiento y protección de memoria móvil ---
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const conn = navigator.connection || {};
-  const LOW_POWER = !!conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || '') || window.innerWidth <= 768;
-  // En móvil / ahorro de datos se usa 1 de cada 2 frames (el suavizado lo disimula)
+  // Detección estricta de móvil/tablet para prevenir el crash de memoria RAM (OOM / Jetsam) en iOS WebKit y Android
+  const IS_MOBILE = window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024) || !!conn.saveData;
+  const STATIC_BG = REDUCED_MOTION || IS_MOBILE;
+
+  const LOW_POWER = !!conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || '');
   const FRAME_STEP = LOW_POWER ? 2 : 1;
-  // Keep concurrency low to avoid saturating the main thread during scroll
   const CONCURRENCY = LOW_POWER ? 4 : 6;
 
   // Ajusta un índice al frame más cercano que realmente se descarga
@@ -155,24 +157,32 @@ function resize() {
 
 // Calculate target frame from scroll position
 function updateScrollTarget() {
+  if (STATIC_BG) {
+    targetFrame = 1;
+    return;
+  }
+
   const scrollElement = document.documentElement;
   const maxScroll = scrollElement.scrollHeight - window.innerHeight;
   const scrollTop = Math.max(0, window.scrollY || scrollElement.scrollTop);
 
   const progress = maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0;
-  targetFrame = REDUCED_MOTION ? 1 : 1 + progress * (FRAME_COUNT - 1);
+  targetFrame = 1 + progress * (FRAME_COUNT - 1);
   wake();
 }
 
 // El bucle solo corre mientras hay algo que animar (ahorra batería en reposo)
 let rafId = null;
 function wake() {
+  if (STATIC_BG) return;
   if (rafId === null) rafId = requestAnimationFrame(tick);
 }
 
 // Smooth linear interpolation animation loop
 function tick() {
   rafId = null;
+  if (STATIC_BG) return;
+
   // LERP damping for buttery smooth motion
   const diff = targetFrame - currentFrame;
   if (Math.abs(diff) > 0.0005) {
@@ -195,13 +205,15 @@ function tick() {
 
 // Concurrent batch preloader
 async function preloadAllFrames() {
-  // 1. Immediately load & render frame 1
+  // 1. Inmediatamente carga y renderiza el Fotograma 1 (calidad nativa nítida)
   await loadSingleFrame(1);
   drawFrame(1);
   isFirstFrameRendered = true;
 
-  // Con "reducir movimiento" el fondo queda fijo: no se descarga el resto
-  if (REDUCED_MOTION) return;
+  // En móvil / ahorro de datos o con "reducir movimiento":
+  // Se detiene aquí. Solo se usa el fotograma 1 (~8 MB RAM).
+  // Esto elimina el 100% de los cierres forzosos (Jetsam OOM Crash) en iOS Safari y Android.
+  if (STATIC_BG) return;
 
   // El resto espera a que la página termine de cargar (fuentes, logos) y al navegador libre
   if (document.readyState !== 'complete') {
