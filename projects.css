@@ -2470,3 +2470,20 @@ body.projects-body .wa-float {
     font-size: 0.72rem;
   }
 }
+
+/* Individual Slide Coming Soon Slot */
+.card-slide.slide-coming-soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 87, 34, 0.12) 0%, rgba(14, 18, 28, 0.95) 75%), #0c101a;
+  padding: 24px;
+}
+
+.coming-soon-slide-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
