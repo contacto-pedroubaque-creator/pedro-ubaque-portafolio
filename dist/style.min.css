@@ -1557,8 +1557,8 @@ button:focus-visible {
         right: auto;
         bottom: auto;
         transform: none;
-        align-self: flex-end;
-        margin: 20px 8px 12px 0;
+        align-self: center;
+        margin: 22px auto 10px auto;
         z-index: 5;
     }
 

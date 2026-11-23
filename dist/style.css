@@ -46,7 +46,9 @@ html {
 }
 
 /* Balance tipográfico en títulos (Evita huérfanos / web-design-guidelines) */
-h1, h2, h3,
+h1,
+h2,
+h3,
 .hero-title,
 .section-heading,
 .tailored-title,
@@ -122,6 +124,7 @@ button:focus-visible {
   html {
     scroll-behavior: auto !important;
   }
+
   .btn-touch-header,
   .btn-orange-cta,
   .btn-glow-pill,
