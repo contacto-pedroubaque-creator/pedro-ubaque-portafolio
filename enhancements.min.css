@@ -213,9 +213,9 @@
 }
 
 
+/* === Tarjeta central: sin etiqueta y colgando bajo el nombre (Escritorio) === */
 .card-top-tag {
     display: none;
-
 }
 
 .person-display-frame {
@@ -235,13 +235,142 @@
     width: clamp(260px, 22vw, 360px);
 }
 
+/* === Móvil Vertical: jerarquía limpia sin tapar el nombre ni el rostro de fondo === */
 @media (max-width: 768px) {
+    .person-hero-section {
+        padding: 24px 16px 20px;
+    }
+
+    .person-meta-top {
+        position: static;
+        text-align: left;
+        margin: 0 0 16px;
+        max-width: 100%;
+    }
+
     .person-display-frame {
-        --card-drop: 180px;
+        --card-drop: 0px;
+        margin-bottom: 24px;
+        min-height: auto;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .person-name-line {
+        font-size: clamp(3.4rem, 14.5vw, 5.2rem);
+        line-height: 0.88;
+        letter-spacing: -0.04em;
+        width: 100%;
+        text-align: left;
+    }
+
+    .person-name-line.line-1 {
+        order: 1;
+    }
+
+    .person-name-line.line-2 {
+        order: 2;
+    }
+
+    .person-center-card {
+        order: 3;
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        transform: none;
+        align-self: flex-end;
+        margin: 20px 8px 12px 0;
+        z-index: 5;
+    }
+
+    .person-center-card:hover {
+        transform: scale(1.02);
     }
 
     .card-img-wrap {
-        width: clamp(180px, 34vw, 220px);
+        width: clamp(200px, 54vw, 260px);
+        aspect-ratio: 1 / 1;
+        border-radius: 28px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+}
+
+/* === Móvil Horizontal (Landscape): adaptación proporcional para evitar colisión con el nombre === */
+@media (orientation: landscape) and (max-height: 520px),
+       (orientation: landscape) and (max-width: 1024px) {
+    .person-hero-section {
+        padding: 16px 24px 14px;
+    }
+
+    .person-meta-top {
+        position: absolute;
+        top: 0;
+        right: 0;
+        max-width: 320px;
+        text-align: left;
+        z-index: 6;
+    }
+
+    .person-meta-year {
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+    }
+
+    .person-meta-desc {
+        font-size: 0.82rem;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .person-display-frame {
+        --card-drop: 45px;
+        margin: 6px 0 10px;
+        margin-bottom: calc(12px + var(--card-drop));
+        min-height: auto;
+        padding: 0;
+    }
+
+    .person-name-line {
+        font-size: clamp(2.6rem, 8vw, 4.4rem);
+        line-height: 0.88;
+        max-width: 58%;
+        white-space: nowrap;
+    }
+
+    .person-name-line.line-1 {
+        order: unset;
+    }
+
+    .person-name-line.line-2 {
+        order: unset;
+    }
+
+    .person-center-card {
+        order: unset;
+        position: absolute;
+        top: -5%;
+        left: 82%;
+        transform: translate(-50%, calc(-50% + var(--card-drop)));
+        margin: 0;
+        z-index: 5;
+    }
+
+    .person-center-card:hover {
+        transform: translate(-50%, calc(-53% + var(--card-drop))) scale(1.02);
+    }
+
+    .card-img-wrap {
+        width: clamp(150px, 40vh, 210px);
+        aspect-ratio: 1 / 1;
+        border-radius: 22px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
     }
 }
 
