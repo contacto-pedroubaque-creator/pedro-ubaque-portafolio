@@ -8,349 +8,353 @@
   const framesFolder = canvas.getAttribute('data-folder') || 'frames';
   const FRAME_COUNT = parseInt(canvas.getAttribute('data-frame-count'), 10) || 240;
 
-  // --- Ajustes de rendimiento y protección de memoria móvil ---
+  // --- Detección de dispositivo y límites de memoria adaptativos ---
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const conn = navigator.connection || {};
-  // Detección estricta de móvil/tablet para adaptar el presupuesto de memoria RAM (OOM / Jetsam)
   const IS_MOBILE = window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024) || !!conn.saveData;
 
-  const LOW_POWER = !!conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || '');
-  const FRAME_STEP = IS_MOBILE ? 2 : (LOW_POWER ? 2 : 1);
-  const CONCURRENCY = IS_MOBILE ? 3 : (LOW_POWER ? 4 : 6);
+  // En móvil usamos saltos de 2 frames para máxima ligereza y scroll reactivo
+  const FRAME_STEP = IS_MOBILE ? 2 : 1;
+  const CONCURRENCY = IS_MOBILE ? 2 : 6;
 
-  // Límite de fotogramas simultáneos en RAM para evitar que WebKit/Safari cierre la pestaña
-  // En móvil: máximo 16 fotogramas (~32 MB de RAM con downsampling a 960x540)
-  // En PC/Desktop: hasta 240 fotogramas
-  const MAX_MEMORY_FRAMES = IS_MOBILE ? 16 : 240;
+  // En móvil limitamos la memoria en RAM a máximo 12 fotogramas (con ImageBitmap.close() para liberar GPU)
+  // En escritorio podemos almacenar hasta FRAME_COUNT fotogramas en RAM
+  const MAX_CACHED_FRAMES = IS_MOBILE ? 12 : (FRAME_COUNT + 1);
+  const frameCache = new Map(); // index -> ImageBitmap | HTMLImageElement
+  const inFlightRequests = new Map();
 
-  // Ajusta un índice al frame más cercano que realmente se descarga
+  // Ajusta un índice al frame más cercano según el paso
   function snapFrame(i) {
     if (FRAME_STEP === 1 || i >= FRAME_COUNT) return i;
     return Math.min(FRAME_COUNT, 1 + Math.round((i - 1) / FRAME_STEP) * FRAME_STEP);
   }
 
-  // Preloaded frames array (1-indexed, size 241)
-  const frames = new Array(FRAME_COUNT + 1).fill(null);
-  const activeFrameKeys = [];
-
   let targetFrame = 1;
   let currentFrame = 1;
   let lastDrawnIndex = -1;
   let isFirstFrameRendered = false;
-  // Tracks frames drawn as fallback that need a redraw when the real frame loads
   const pendingFrameUpdates = new Set();
 
-  // Libera de forma activa la memoria del fotograma más alejado para no exceder MAX_MEMORY_FRAMES
-  function evictExcessFrames(currentIndex) {
-    if (activeFrameKeys.length <= MAX_MEMORY_FRAMES) return;
-
-    let farthestIdx = -1;
-    let maxDist = -1;
-    let listPos = -1;
-
-    for (let i = 0; i < activeFrameKeys.length; i++) {
-      const idx = activeFrameKeys[i];
-      if (idx === 1) continue; // Mantener siempre el fotograma 1 como ancla visual
-      const dist = Math.abs(idx - currentIndex);
-      if (dist > maxDist) {
-        maxDist = dist;
-        farthestIdx = idx;
-        listPos = i;
-      }
-    }
-
-    if (farthestIdx !== -1 && listPos !== -1) {
-      activeFrameKeys.splice(listPos, 1);
-      const oldItem = frames[farthestIdx];
-      frames[farthestIdx] = null;
-      if (oldItem && typeof oldItem.close === 'function') {
-        try { oldItem.close(); } catch (e) {} // Libera la memoria de GPU y RAM de inmediato
-      }
-    }
-  }
-
-  function storeFrame(index, item) {
-    frames[index] = item;
-    if (!activeFrameKeys.includes(index)) {
-      activeFrameKeys.push(index);
-    }
-    evictExcessFrames(Math.round(currentFrame));
-  }
-
-  // Format frame URL
   function getFrameUrl(index) {
     const paddedIndex = String(index).padStart(3, '0');
     return `${framesFolder}/ezgif-frame-${paddedIndex}.webp`;
   }
 
-// Load a single frame via fetch + createImageBitmap for zero main-thread decoding jank
-async function loadSingleFrame(index) {
-  if (frames[index]) return frames[index];
+  // Almacena un fotograma en la caché con desalojo LRU seguro para evitar OOM
+  function storeFrame(index, imgOrBitmap) {
+    if (!imgOrBitmap) return;
 
-  const url = getFrameUrl(index);
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const blob = await res.blob();
-    if ('createImageBitmap' in window) {
-      // En móvil se decodifica adaptando a 960x540 (ultra nítido en pantallas verticales) ahorrando 75% de RAM por frame
-      let bitmap;
-      if (IS_MOBILE) {
-        try {
-          bitmap = await createImageBitmap(blob, { resizeWidth: 960, resizeHeight: 540, resizeQuality: 'medium' });
-        } catch (e) {
-          bitmap = await createImageBitmap(blob);
-        }
-      } else {
-        bitmap = await createImageBitmap(blob);
-      }
-
-      storeFrame(index, bitmap);
-      // If this frame was previously drawn as a fallback, redraw it now
-      if (pendingFrameUpdates.has(index)) {
-        pendingFrameUpdates.delete(index);
-        const snapped = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
-        if (snapped === index) drawFrame(index);
-      }
-      return bitmap;
+    if (frameCache.has(index)) {
+      // Mover al final (más recientemente usado)
+      frameCache.delete(index);
+      frameCache.set(index, imgOrBitmap);
+      return;
     }
-  } catch (e) {
-    // Fallback to Image element
+
+    // Si excede el límite de memoria permitido (especialmente en móvil):
+    if (frameCache.size >= MAX_CACHED_FRAMES) {
+      let evictKey = null;
+      for (const k of frameCache.keys()) {
+        // Mantener siempre el frame 1 (fallback permanente) y evitar desalojar el fotograma actual
+        if (k !== 1 && Math.abs(k - targetFrame) > 3) {
+          evictKey = k;
+          break;
+        }
+      }
+      if (evictKey === null) {
+        for (const k of frameCache.keys()) {
+          if (k !== 1) {
+            evictKey = k;
+            break;
+          }
+        }
+      }
+
+      if (evictKey !== null) {
+        const oldItem = frameCache.get(evictKey);
+        frameCache.delete(evictKey);
+        // ImageBitmap.close() libera la memoria de textura en la GPU inmediatamente en WebKit
+        if (oldItem && typeof oldItem.close === 'function') {
+          try { oldItem.close(); } catch (e) {}
+        }
+      }
+    }
+
+    frameCache.set(index, imgOrBitmap);
   }
 
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      storeFrame(index, img);
-      // If this frame was previously drawn as a fallback, redraw it now
-      if (pendingFrameUpdates.has(index)) {
-        pendingFrameUpdates.delete(index);
-        const snapped = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
-        if (snapped === index) drawFrame(index);
-      }
-      resolve(img);
-    };
-    img.onerror = () => {
-      resolve(null);
-    };
-  });
-}
+  function getCachedFrame(index) {
+    if (frameCache.has(index)) {
+      const item = frameCache.get(index);
+      frameCache.delete(index);
+      frameCache.set(index, item);
+      return item;
+    }
+    return null;
+  }
 
-// Draw a specific frame to the canvas with "cover" fit & crisp rendering
-function drawFrame(index) {
-  if (!canvas.width || !canvas.height) return;
-
-  let isExactFrame = true;
-  let img = frames[index];
-
-  // If the target frame is not yet loaded, use the closest loaded frame as fallback
-  if (!img) {
-    isExactFrame = false;
+  function findClosestFrame(index) {
+    if (frameCache.has(index)) return frameCache.get(index);
     for (let offset = 1; offset < FRAME_COUNT; offset++) {
-      if (index - offset >= 1 && frames[index - offset]) {
-        img = frames[index - offset];
-        break;
+      if (index - offset >= 1 && frameCache.has(index - offset)) {
+        return frameCache.get(index - offset);
       }
-      if (index + offset <= FRAME_COUNT && frames[index + offset]) {
-        img = frames[index + offset];
-        break;
+      if (index + offset <= FRAME_COUNT && frameCache.has(index + offset)) {
+        return frameCache.get(index + offset);
       }
     }
-    // Dispara la carga bajo demanda del fotograma objetivo
-    loadSingleFrame(index);
+    return frameCache.get(1) || null;
   }
 
-  if (!img) return;
+  // Carga un fotograma bajo demanda con reescalado ligero en móvil
+  async function loadSingleFrame(index) {
+    const cached = getCachedFrame(index);
+    if (cached) return cached;
+    if (inFlightRequests.has(index)) return inFlightRequests.get(index);
 
-  const cw = canvas.width;
-  const ch = canvas.height;
-  const imgW = img.width;
-  const imgH = img.height;
+    const promise = (async () => {
+      const url = getFrameUrl(index);
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
 
-  // Maintain aspect ratio: cover viewport
-  const hRatio = cw / imgW;
-  const vRatio = ch / imgH;
-  const ratio = Math.max(hRatio, vRatio);
+        if ('createImageBitmap' in window) {
+          let bitmap;
+          // En móvil reescalamos a máximo 800px para ahorrar 75% de RAM por imagen
+          if (IS_MOBILE && canvas.width) {
+            const maxW = Math.min(800, canvas.width);
+            bitmap = await createImageBitmap(blob, {
+              resizeWidth: maxW,
+              resizeQuality: 'medium'
+            });
+          } else {
+            bitmap = await createImageBitmap(blob);
+          }
 
-  const renderW = Math.ceil(imgW * ratio);
-  const renderH = Math.ceil(imgH * ratio);
-  const offsetX = Math.floor((cw - renderW) / 2);
-  const offsetY = Math.floor((ch - renderH) / 2);
+          storeFrame(index, bitmap);
 
-  ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+          if (pendingFrameUpdates.has(index)) {
+            pendingFrameUpdates.delete(index);
+            const snapped = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
+            if (snapped === index) drawFrame(index);
+          }
+          return bitmap;
+        }
+      } catch (e) {
+        // Fallback a Image
+      }
 
-  // Always mark as drawn so tick() can exit cleanly.
-  // If it was a fallback, schedule a single re-draw once the real frame arrives.
-  lastDrawnIndex = index;
-  if (!isExactFrame) {
-    pendingFrameUpdates.add(index);
-  }
-}
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          storeFrame(index, img);
+          if (pendingFrameUpdates.has(index)) {
+            pendingFrameUpdates.delete(index);
+            const snapped = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
+            if (snapped === index) drawFrame(index);
+          }
+          resolve(img);
+        };
+        img.onerror = () => resolve(null);
+      });
+    })();
 
-// Resize canvas buffer matching viewport & DPR for retina sharpness
-function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-
-  const bufferW = Math.floor(w * dpr);
-  const bufferH = Math.floor(h * dpr);
-
-  if (canvas.width !== bufferW || canvas.height !== bufferH) {
-    canvas.width = bufferW;
-    canvas.height = bufferH;
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-  }
-
-  const currentIdx = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
-  drawFrame(currentIdx);
-}
-
-// Precarga dinámica adaptativa en móvil según la posición del scroll
-let nearbyScrollTimer = null;
-function requestNearbyFrames(centerIdx) {
-  clearTimeout(nearbyScrollTimer);
-  nearbyScrollTimer = setTimeout(() => {
-    const step = FRAME_STEP;
-    const count = IS_MOBILE ? 3 : 6;
-    for (let offset = 1; offset <= count; offset++) {
-      const forwardIdx = snapFrame(centerIdx + offset * step);
-      const backwardIdx = snapFrame(centerIdx - offset * step);
-      if (forwardIdx <= FRAME_COUNT && !frames[forwardIdx]) loadSingleFrame(forwardIdx);
-      if (backwardIdx >= 1 && !frames[backwardIdx]) loadSingleFrame(backwardIdx);
+    inFlightRequests.set(index, promise);
+    try {
+      const res = await promise;
+      return res;
+    } finally {
+      inFlightRequests.delete(index);
     }
-  }, 25);
-}
-
-// Calculate target frame from scroll position
-function updateScrollTarget() {
-  if (REDUCED_MOTION) {
-    targetFrame = 1;
-    return;
   }
 
-  const scrollElement = document.documentElement;
-  const maxScroll = scrollElement.scrollHeight - window.innerHeight;
-  const scrollTop = Math.max(0, window.scrollY || scrollElement.scrollTop);
+  // Dibuja el fotograma en canvas con ajuste tipo "cover"
+  function drawFrame(index) {
+    if (!canvas.width || !canvas.height) return;
 
-  const progress = maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0;
-  targetFrame = 1 + progress * (FRAME_COUNT - 1);
-  wake();
+    let isExactFrame = true;
+    let img = getCachedFrame(index);
 
-  if (IS_MOBILE) {
-    requestNearbyFrames(Math.round(targetFrame));
+    if (!img) {
+      isExactFrame = false;
+      img = findClosestFrame(index);
+      // Solicitar el fotograma exacto bajo demanda
+      loadSingleFrame(index);
+    }
+
+    if (!img) return;
+
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const imgW = img.width;
+    const imgH = img.height;
+
+    const hRatio = cw / imgW;
+    const vRatio = ch / imgH;
+    const ratio = Math.max(hRatio, vRatio);
+
+    const renderW = Math.ceil(imgW * ratio);
+    const renderH = Math.ceil(imgH * ratio);
+    const offsetX = Math.floor((cw - renderW) / 2);
+    const offsetY = Math.floor((ch - renderH) / 2);
+
+    ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+
+    lastDrawnIndex = index;
+    if (!isExactFrame) {
+      pendingFrameUpdates.add(index);
+    }
   }
-}
 
-// El bucle solo corre mientras hay algo que animar (ahorra batería en reposo)
-let rafId = null;
-function wake() {
-  if (REDUCED_MOTION) return;
-  if (rafId === null) rafId = requestAnimationFrame(tick);
-}
+  // Redimensiona el buffer del canvas
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.5 : 2);
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-// Smooth linear interpolation animation loop
-function tick() {
-  rafId = null;
-  if (REDUCED_MOTION) return;
+    const bufferW = Math.floor(w * dpr);
+    const bufferH = Math.floor(h * dpr);
 
-  // LERP damping for buttery smooth motion
-  const diff = targetFrame - currentFrame;
-  if (Math.abs(diff) > 0.0005) {
-    currentFrame += diff * 0.08;
-  } else {
-    currentFrame = targetFrame;
+    if (canvas.width !== bufferW || canvas.height !== bufferH) {
+      canvas.width = bufferW;
+      canvas.height = bufferH;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+    }
+
+    const currentIdx = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
+    drawFrame(currentIdx);
   }
 
-  const frameToDraw = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
-  if (frameToDraw !== lastDrawnIndex || !isFirstFrameRendered) {
-    drawFrame(frameToDraw);
+  // Calcula el frame objetivo según el scroll
+  function updateScrollTarget() {
+    if (REDUCED_MOTION) {
+      targetFrame = 1;
+      return;
+    }
+
+    const scrollElement = document.documentElement;
+    const maxScroll = scrollElement.scrollHeight - window.innerHeight;
+    const scrollTop = Math.max(0, window.scrollY || scrollElement.scrollTop);
+
+    const progress = maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0;
+    targetFrame = 1 + progress * (FRAME_COUNT - 1);
+
+    // Precargar de forma predictiva el frame objetivo y el siguiente en móvil
+    const targetIdx = snapFrame(Math.round(targetFrame));
+    if (!frameCache.has(targetIdx)) {
+      loadSingleFrame(targetIdx);
+    }
+    const nextAhead = snapFrame(Math.min(FRAME_COUNT, targetIdx + FRAME_STEP));
+    if (!frameCache.has(nextAhead)) {
+      loadSingleFrame(nextAhead);
+    }
+
+    wake();
+  }
+
+  let rafId = null;
+  function wake() {
+    if (rafId === null) rafId = requestAnimationFrame(tick);
+  }
+
+  // Bucle de interpolación y renderizado
+  function tick() {
+    rafId = null;
+
+    const diff = targetFrame - currentFrame;
+    if (Math.abs(diff) > 0.0005) {
+      currentFrame += diff * 0.08;
+    } else {
+      currentFrame = targetFrame;
+    }
+
+    const frameToDraw = snapFrame(Math.max(1, Math.min(FRAME_COUNT, Math.round(currentFrame))));
+    if (frameToDraw !== lastDrawnIndex || !isFirstFrameRendered) {
+      drawFrame(frameToDraw);
+      isFirstFrameRendered = true;
+    }
+
+    if (currentFrame !== targetFrame || lastDrawnIndex !== frameToDraw) {
+      rafId = requestAnimationFrame(tick);
+    }
+  }
+
+  // Precarga inteligente adaptativa
+  async function preloadAllFrames() {
+    // 1. Cargar y renderizar inmediatamente el Frame 1
+    await loadSingleFrame(1);
+    drawFrame(1);
     isFirstFrameRendered = true;
-  }
 
-  // Seguir solo si aún se mueve o el frame exacto todavía no se ha dibujado
-  if (currentFrame !== targetFrame || lastDrawnIndex !== frameToDraw) {
-    rafId = requestAnimationFrame(tick);
-  }
-}
+    if (REDUCED_MOTION) return;
 
-// Concurrent batch preloader
-async function preloadAllFrames() {
-  // 1. Inmediatamente carga y renderiza el Fotograma 1 (calidad nativa nítida)
-  await loadSingleFrame(1);
-  drawFrame(1);
-  isFirstFrameRendered = true;
-
-  if (REDUCED_MOTION) return;
-
-  // En móvil: precarga suavemente solo los primeros 10 fotogramas iniciales
-  // El resto se carga y recicla en tiempo real con la ventana deslizante al hacer scroll
-  if (IS_MOBILE) {
-    for (let i = 2; i <= Math.min(10, FRAME_COUNT); i += FRAME_STEP) {
-      loadSingleFrame(i);
+    if (document.readyState !== 'complete') {
+      await new Promise((r) => window.addEventListener('load', r, { once: true }));
     }
-    return;
-  }
+    await new Promise((r) => ('requestIdleCallback' in window
+      ? requestIdleCallback(r, { timeout: 1500 })
+      : setTimeout(r, 300)));
 
-  // El resto espera a que la página termine de cargar (fuentes, logos) y al navegador libre
-  if (document.readyState !== 'complete') {
-    await new Promise((r) => window.addEventListener('load', r, { once: true }));
-  }
-  await new Promise((r) => ('requestIdleCallback' in window
-    ? requestIdleCallback(r, { timeout: 1500 })
-    : setTimeout(r, 300)));
-
-  // 2. Fast pass: Preload keyframes evenly across the timeline (every 8th frame)
-  // This guarantees instant responsiveness if user scrubs immediately.
-  const keyframes = [];
-  for (let i = 8; i <= FRAME_COUNT; i += 8) {
-    keyframes.push(snapFrame(i));
-  }
-
-  // Helper to process queues concurrently
-  async function runPool(queue, concurrency = 16) {
-    const workers = Array.from({ length: concurrency }, async () => {
-      while (queue.length > 0) {
-        const idx = queue.shift();
-        if (idx !== undefined) {
-          await loadSingleFrame(idx);
+    if (IS_MOBILE) {
+      // En móvil: Precargar únicamente 6 keyframes clave espaciados a lo largo de la página
+      // Esto consume solo ~9 MB y garantiza que al desplazarse rápido siempre haya un fotograma de respaldo
+      const mobileKeyframes = [1, 40, 80, 120, 160, 200, 240];
+      for (const k of mobileKeyframes) {
+        if (!frameCache.has(k)) {
+          await loadSingleFrame(k);
         }
       }
-    });
-    await Promise.all(workers);
+      return;
+    }
+
+    // En escritorio: Precarga completa
+    const keyframes = [];
+    for (let i = 8; i <= FRAME_COUNT; i += 8) {
+      keyframes.push(snapFrame(i));
+    }
+
+    async function runPool(queue, concurrency = 16) {
+      const workers = Array.from({ length: concurrency }, async () => {
+        while (queue.length > 0) {
+          const idx = queue.shift();
+          if (idx !== undefined) {
+            await loadSingleFrame(idx);
+          }
+        }
+      });
+      await Promise.all(workers);
+    }
+
+    await runPool([...new Set(keyframes)], Math.min(8, CONCURRENCY));
+
+    const remaining = [];
+    for (let i = 2; i <= FRAME_COUNT; i++) {
+      const wanted = FRAME_STEP === 1 || (i - 1) % FRAME_STEP === 0 || i === FRAME_COUNT;
+      if (wanted && !frameCache.has(i)) remaining.push(i);
+    }
+
+    await runPool(remaining, CONCURRENCY);
   }
 
-  await runPool([...new Set(keyframes)], Math.min(8, CONCURRENCY));
-
-  // 3. Complete pass: Preload all remaining frames in sequential order
-  const remaining = [];
-  for (let i = 2; i <= FRAME_COUNT; i++) {
-    const wanted = FRAME_STEP === 1 || (i - 1) % FRAME_STEP === 0 || i === FRAME_COUNT;
-    if (wanted && !frames[i]) remaining.push(i);
+  // Listeners
+  function handleResize() {
+    resize();
+    updateScrollTarget();
   }
 
-  await runPool(remaining, CONCURRENCY);
-}
+  window.addEventListener('scroll', updateScrollTarget, { passive: true });
+  window.addEventListener('resize', handleResize, { passive: true });
+  window.addEventListener('orientationchange', handleResize, { passive: true });
+  window.addEventListener('load', handleResize, { passive: true });
 
-// Event listeners
-function handleResize() {
+  // Iniciar
   resize();
   updateScrollTarget();
-}
-
-window.addEventListener('scroll', updateScrollTarget, { passive: true });
-window.addEventListener('resize', handleResize, { passive: true });
-window.addEventListener('orientationchange', handleResize, { passive: true });
-window.addEventListener('load', handleResize, { passive: true });
-
-// Initialize
-resize();
-updateScrollTarget();
-wake();
-preloadAllFrames();
+  wake();
+  preloadAllFrames();
 })();
-
