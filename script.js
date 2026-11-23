@@ -8,24 +8,22 @@
   const framesFolder = canvas.getAttribute('data-folder') || 'frames';
   const FRAME_COUNT = parseInt(canvas.getAttribute('data-frame-count'), 10) || 240;
 
-  // --- Detección de dispositivo y límites de memoria adaptativos ---
+  // --- Detección de dispositivo y optimizaciones de rendimiento ---
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const conn = navigator.connection || {};
   const IS_MOBILE = window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024) || !!conn.saveData;
 
-  // En móvil usamos saltos de 2 frames para máxima ligereza y scroll reactivo
+  // En móvil usamos paso de 2 frames (120 puntos de animación) para equilibrio perfecto fluidez/rendimiento
   const FRAME_STEP = IS_MOBILE ? 2 : 1;
-  const CONCURRENCY = IS_MOBILE ? 2 : 6;
+  const CONCURRENCY = IS_MOBILE ? 3 : 6;
 
-  // En móvil limitamos la memoria en RAM a máximo 12 fotogramas (con ImageBitmap.close() para liberar GPU)
-  // En escritorio podemos almacenar hasta FRAME_COUNT fotogramas en RAM
-  const MAX_CACHED_FRAMES = IS_MOBILE ? 12 : (FRAME_COUNT + 1);
-  const frameCache = new Map(); // index -> ImageBitmap | HTMLImageElement
+  // Caché adaptativa: en móvil hasta 45 fotogramas optimizados (~35 MB RAM max), en PC hasta 240
+  const MAX_CACHED_FRAMES = IS_MOBILE ? 45 : (FRAME_COUNT + 1);
+  const frameCache = new Map();
   const inFlightRequests = new Map();
 
-  // Ajusta un índice al frame más cercano según el paso
   function snapFrame(i) {
-    if (FRAME_STEP === 1 || i >= FRAME_COUNT) return i;
+    if (FRAME_STEP === 1 || i >= FRAME_COUNT) return Math.min(FRAME_COUNT, Math.max(1, Math.round(i)));
     return Math.min(FRAME_COUNT, 1 + Math.round((i - 1) / FRAME_STEP) * FRAME_STEP);
   }
 
@@ -33,6 +31,8 @@
   let currentFrame = 1;
   let lastDrawnIndex = -1;
   let isFirstFrameRendered = false;
+  let lastScrollTop = 0;
+  let scrollDirection = 1;
   const pendingFrameUpdates = new Set();
 
   function getFrameUrl(index) {
@@ -40,23 +40,19 @@
     return `${framesFolder}/ezgif-frame-${paddedIndex}.webp`;
   }
 
-  // Almacena un fotograma en la caché con desalojo LRU seguro para evitar OOM
   function storeFrame(index, imgOrBitmap) {
     if (!imgOrBitmap) return;
 
     if (frameCache.has(index)) {
-      // Mover al final (más recientemente usado)
       frameCache.delete(index);
       frameCache.set(index, imgOrBitmap);
       return;
     }
 
-    // Si excede el límite de memoria permitido (especialmente en móvil):
     if (frameCache.size >= MAX_CACHED_FRAMES) {
       let evictKey = null;
       for (const k of frameCache.keys()) {
-        // Mantener siempre el frame 1 (fallback permanente) y evitar desalojar el fotograma actual
-        if (k !== 1 && Math.abs(k - targetFrame) > 3) {
+        if (k !== 1 && Math.abs(k - targetFrame) > 8) {
           evictKey = k;
           break;
         }
@@ -73,7 +69,6 @@
       if (evictKey !== null) {
         const oldItem = frameCache.get(evictKey);
         frameCache.delete(evictKey);
-        // ImageBitmap.close() libera la memoria de textura en la GPU inmediatamente en WebKit
         if (oldItem && typeof oldItem.close === 'function') {
           try { oldItem.close(); } catch (e) {}
         }
@@ -106,7 +101,6 @@
     return frameCache.get(1) || null;
   }
 
-  // Carga un fotograma bajo demanda con reescalado ligero en móvil
   async function loadSingleFrame(index) {
     const cached = getCachedFrame(index);
     if (cached) return cached;
@@ -121,9 +115,8 @@
 
         if ('createImageBitmap' in window) {
           let bitmap;
-          // En móvil reescalamos a máximo 800px para ahorrar 75% de RAM por imagen
           if (IS_MOBILE && canvas.width) {
-            const maxW = Math.min(800, canvas.width);
+            const maxW = Math.min(840, Math.max(480, Math.round(canvas.width)));
             bitmap = await createImageBitmap(blob, {
               resizeWidth: maxW,
               resizeQuality: 'medium'
@@ -141,9 +134,7 @@
           }
           return bitmap;
         }
-      } catch (e) {
-        // Fallback a Image
-      }
+      } catch (e) {}
 
       return new Promise((resolve) => {
         const img = new Image();
@@ -170,7 +161,6 @@
     }
   }
 
-  // Dibuja el fotograma en canvas con ajuste tipo "cover"
   function drawFrame(index) {
     if (!canvas.width || !canvas.height) return;
 
@@ -180,7 +170,6 @@
     if (!img) {
       isExactFrame = false;
       img = findClosestFrame(index);
-      // Solicitar el fotograma exacto bajo demanda
       loadSingleFrame(index);
     }
 
@@ -208,7 +197,6 @@
     }
   }
 
-  // Redimensiona el buffer del canvas
   function resize() {
     const dpr = Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.5 : 2);
     const w = window.innerWidth;
@@ -230,7 +218,6 @@
     drawFrame(currentIdx);
   }
 
-  // Calcula el frame objetivo según el scroll
   function updateScrollTarget() {
     if (REDUCED_MOTION) {
       targetFrame = 1;
@@ -241,17 +228,26 @@
     const maxScroll = scrollElement.scrollHeight - window.innerHeight;
     const scrollTop = Math.max(0, window.scrollY || scrollElement.scrollTop);
 
+    scrollDirection = scrollTop >= lastScrollTop ? 1 : -1;
+    lastScrollTop = scrollTop;
+
     const progress = maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0;
     targetFrame = 1 + progress * (FRAME_COUNT - 1);
 
-    // Precargar de forma predictiva el frame objetivo y el siguiente en móvil
+    // Precarga predictiva en la dirección del scroll
     const targetIdx = snapFrame(Math.round(targetFrame));
     if (!frameCache.has(targetIdx)) {
       loadSingleFrame(targetIdx);
     }
-    const nextAhead = snapFrame(Math.min(FRAME_COUNT, targetIdx + FRAME_STEP));
-    if (!frameCache.has(nextAhead)) {
-      loadSingleFrame(nextAhead);
+
+    // Anticipar los próximos 2 fotogramas en dirección del desplazamiento
+    const stepAhead1 = snapFrame(Math.min(FRAME_COUNT, Math.max(1, targetIdx + scrollDirection * FRAME_STEP)));
+    if (!frameCache.has(stepAhead1)) {
+      loadSingleFrame(stepAhead1);
+    }
+    const stepAhead2 = snapFrame(Math.min(FRAME_COUNT, Math.max(1, targetIdx + scrollDirection * FRAME_STEP * 2)));
+    if (!frameCache.has(stepAhead2)) {
+      loadSingleFrame(stepAhead2);
     }
 
     wake();
@@ -262,13 +258,14 @@
     if (rafId === null) rafId = requestAnimationFrame(tick);
   }
 
-  // Bucle de interpolación y renderizado
   function tick() {
     rafId = null;
 
+    // LERP adaptativo: 0.16 en móvil para respuesta táctil inmediata, 0.08 en PC para inercia suave
+    const lerpFactor = IS_MOBILE ? 0.16 : 0.08;
     const diff = targetFrame - currentFrame;
     if (Math.abs(diff) > 0.0005) {
-      currentFrame += diff * 0.08;
+      currentFrame += diff * lerpFactor;
     } else {
       currentFrame = targetFrame;
     }
@@ -284,9 +281,7 @@
     }
   }
 
-  // Precarga inteligente adaptativa
   async function preloadAllFrames() {
-    // 1. Cargar y renderizar inmediatamente el Frame 1
     await loadSingleFrame(1);
     drawFrame(1);
     isFirstFrameRendered = true;
@@ -301,18 +296,27 @@
       : setTimeout(r, 300)));
 
     if (IS_MOBILE) {
-      // En móvil: Precargar únicamente 6 keyframes clave espaciados a lo largo de la página
-      // Esto consume solo ~9 MB y garantiza que al desplazarse rápido siempre haya un fotograma de respaldo
-      const mobileKeyframes = [1, 40, 80, 120, 160, 200, 240];
-      for (const k of mobileKeyframes) {
-        if (!frameCache.has(k)) {
-          await loadSingleFrame(k);
-        }
+      // En móvil: Precargar keyframes espaciados cada 6 frames de forma fluida
+      // 40 keyframes = solo ~1.4 MB de descarga y ~35 MB RAM
+      const mobileKeyframes = [];
+      for (let i = 1; i <= FRAME_COUNT; i += 6) {
+        mobileKeyframes.push(i);
       }
+      if (!mobileKeyframes.includes(FRAME_COUNT)) mobileKeyframes.push(FRAME_COUNT);
+
+      const pool = [...mobileKeyframes];
+      const workers = Array.from({ length: 2 }, async () => {
+        while (pool.length > 0) {
+          const idx = pool.shift();
+          if (idx !== undefined && !frameCache.has(idx)) {
+            await loadSingleFrame(idx);
+          }
+        }
+      });
+      await Promise.all(workers);
       return;
     }
 
-    // En escritorio: Precarga completa
     const keyframes = [];
     for (let i = 8; i <= FRAME_COUNT; i += 8) {
       keyframes.push(snapFrame(i));
@@ -341,18 +345,17 @@
     await runPool(remaining, CONCURRENCY);
   }
 
-  // Listeners
   function handleResize() {
     resize();
     updateScrollTarget();
   }
 
   window.addEventListener('scroll', updateScrollTarget, { passive: true });
+  window.addEventListener('touchmove', updateScrollTarget, { passive: true });
   window.addEventListener('resize', handleResize, { passive: true });
   window.addEventListener('orientationchange', handleResize, { passive: true });
   window.addEventListener('load', handleResize, { passive: true });
 
-  // Iniciar
   resize();
   updateScrollTarget();
   wake();
