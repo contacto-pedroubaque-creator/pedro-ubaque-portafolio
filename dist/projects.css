@@ -2422,30 +2422,35 @@ body.projects-body .wa-float {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: rgba(18, 22, 34, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 16px 22px;
-  border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65), 0 0 20px rgba(255, 87, 34, 0.1);
-  max-width: 88%;
+  padding: 11px 18px;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65), 0 0 18px rgba(255, 87, 34, 0.1);
+  max-width: 82%;
 }
 
 .coming-soon-badge-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   color: #ff9e80;
-  font-size: 0.88rem;
+  font-size: 0.80rem;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 
+.coming-soon-badge-row svg {
+  width: 16px;
+  height: 16px;
+}
+
 .coming-soon-glass-card p {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.75);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .gallery-card-uniform.is-coming-soon .card-slide img {
@@ -2485,28 +2490,37 @@ body.projects-body .wa-float {
     text-align: center;
   }
   .coming-soon-glass-card {
-    padding: 12px 16px;
-    max-width: 92%;
+    padding: 9px 14px;
+    max-width: 82%;
     margin: 0 auto;
     align-items: center;
     justify-content: center;
     text-align: center;
+    gap: 5px;
+    border-radius: 12px;
   }
   .coming-soon-badge-row {
-    font-size: 0.82rem;
+    font-size: 0.74rem;
     justify-content: center;
+    gap: 6px;
+  }
+  .coming-soon-badge-row svg {
+    width: 15px;
+    height: 15px;
   }
   .coming-soon-glass-card p {
-    font-size: 0.72rem;
+    font-size: 0.66rem;
+    line-height: 1.35;
     text-align: center;
   }
   .card-slide.slide-coming-soon {
-    padding: 54px 14px 34px !important;
+    padding: 52px 14px 34px !important;
     text-align: center;
   }
   .card-slide.slide-coming-soon .coming-soon-glass-card {
-    padding: 12px 14px !important;
-    max-width: 92% !important;
+    padding: 9px 14px !important;
+    max-width: 82% !important;
+    border-radius: 12px !important;
   }
 }
 
@@ -2542,19 +2556,29 @@ body.projects-body .wa-float {
   justify-content: center !important;
   text-align: center !important;
   margin: 0 auto !important;
-  max-width: 90% !important;
-  padding: 14px 18px !important;
+  max-width: 82% !important;
+  padding: 11px 16px !important;
+  border-radius: 14px !important;
+  gap: 5px !important;
 }
 
 .card-slide.slide-coming-soon .coming-soon-badge-row {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
+  gap: 6px !important;
+  font-size: 0.78rem !important;
   text-align: center !important;
+}
+
+.card-slide.slide-coming-soon .coming-soon-badge-row svg {
+  width: 15px !important;
+  height: 15px !important;
 }
 
 .card-slide.slide-coming-soon .coming-soon-glass-card p {
   text-align: center !important;
   margin: 0 !important;
+  font-size: 0.70rem !important;
+  line-height: 1.38 !important;
 }
