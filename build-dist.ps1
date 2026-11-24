@@ -1,4 +1,4 @@
-# Sincroniza los archivos de producción hacia la carpeta dist/
+﻿# Sincroniza los archivos de producción hacia la carpeta dist/
 $distPath = ".\dist"
 if (-not (Test-Path $distPath)) {
     New-Item -ItemType Directory -Path $distPath -Force | Out-Null
@@ -19,7 +19,11 @@ foreach ($f in $prodFiles) {
 
 $prodDirs = @("assets", "frames", "Fondo_projects")
 foreach ($d in $prodDirs) {
-    if (Test-Path $d) { Copy-Item -Path $d -Destination "$distPath\$d" -Recurse -Force }
+    if (Test-Path $d) {
+        $targetDir = "$distPath\$d"
+        if (-not (Test-Path $targetDir)) { New-Item -ItemType Directory -Path $targetDir -Force | Out-Null }
+        Copy-Item -Path "$d\*" -Destination $targetDir -Recurse -Force
+    }
 }
 
 Write-Host "Carpeta dist/ actualizada con éxito para despliegue."
