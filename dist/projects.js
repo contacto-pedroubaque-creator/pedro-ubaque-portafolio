@@ -98,15 +98,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Initialize popup quote & rating from first visible slide
-        if (ratingEl && activeSlides[0]) {
-          const initRating = activeSlides[0].getAttribute('data-rating');
-          const initQuote = activeSlides[0].getAttribute('data-popup-quote');
-          if (initQuote) ratingEl.setAttribute('data-popup-quote', initQuote);
-          if (initRating && initRating.includes('★')) {
-            const parts = initRating.replace('★', '').trim().split('/');
-            const scoreVal = parts[0] ? parts[0].trim() : '4.8';
-            const maxVal = parts[1] ? parts[1].trim() : '5';
-            ratingEl.innerHTML = `<span class="rating-star">★</span> ${scoreVal} <span class="rating-max">/${maxVal}</span>`;
+        if (activeSlides[0]) {
+          const initStyle = activeSlides[0].getAttribute('data-style');
+          const initTitle = activeSlides[0].getAttribute('data-title');
+          const initTitleItalic = activeSlides[0].getAttribute('data-title-italic');
+          const initDesc = activeSlides[0].getAttribute('data-desc');
+          if (initStyle && styleEl) styleEl.textContent = initStyle;
+          if (initTitle && titleMainEl) titleMainEl.textContent = initTitle;
+          if (initTitleItalic && titleItalicEl) titleItalicEl.textContent = initTitleItalic;
+          if (initDesc && descEl) descEl.textContent = initDesc;
+
+          if (ratingEl) {
+            const initRating = activeSlides[0].getAttribute('data-rating');
+            const initQuote = activeSlides[0].getAttribute('data-popup-quote');
+            if (initQuote) ratingEl.setAttribute('data-popup-quote', initQuote);
+            if (initRating && initRating.includes('★')) {
+              const parts = initRating.replace('★', '').trim().split('/');
+              const scoreVal = parts[0] ? parts[0].trim() : '4.8';
+              const maxVal = parts[1] ? parts[1].trim() : '5';
+              ratingEl.innerHTML = `<span class="rating-star">★</span> ${scoreVal} <span class="rating-max">/${maxVal}</span>`;
+            }
           }
         }
       }
