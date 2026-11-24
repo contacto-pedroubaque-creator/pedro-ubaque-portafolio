@@ -2501,26 +2501,60 @@ body.projects-body .wa-float {
     text-align: center;
   }
   .card-slide.slide-coming-soon {
-    padding: 40px 16px 24px;
+    padding: 54px 14px 34px !important;
     text-align: center;
+  }
+  .card-slide.slide-coming-soon .coming-soon-glass-card {
+    padding: 12px 14px !important;
+    max-width: 92% !important;
   }
 }
 
 /* Individual Slide Coming Soon Slot */
 .card-slide.slide-coming-soon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: radial-gradient(circle at 50% 40%, rgba(255, 87, 34, 0.12) 0%, rgba(14, 18, 28, 0.95) 75%), #0c101a;
-  padding: 24px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  box-sizing: border-box !important;
+  padding: 56px 16px 36px !important;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 87, 34, 0.14) 0%, rgba(14, 18, 28, 0.96) 75%), #0c101a !important;
+  text-align: center !important;
 }
 
-.coming-soon-slide-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  text-align: center;
+.card-slide.slide-coming-soon .coming-soon-slide-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin: auto 0 !important;
+  text-align: center !important;
+}
+
+.card-slide.slide-coming-soon .coming-soon-glass-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+  max-width: 90% !important;
+  padding: 14px 18px !important;
+}
+
+.card-slide.slide-coming-soon .coming-soon-badge-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-align: center !important;
+}
+
+.card-slide.slide-coming-soon .coming-soon-glass-card p {
+  text-align: center !important;
+  margin: 0 !important;
 }
